@@ -1,0 +1,97 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import type { TipoTurnoDB } from "@/types/database";
+
+export interface TurnoFormValoresIniciales {
+  fecha?: string;
+  tipo?: TipoTurnoDB;
+  horaInicio?: string;
+  horaFin?: string;
+  descansoMin?: number;
+  nota?: string;
+}
+
+interface TurnoFormProps {
+  action: (formData: FormData) => void;
+  valoresIniciales?: TurnoFormValoresIniciales;
+  textoBoton: string;
+  /** Link de "Cancelar" (modo edición); se omite en el formulario de creación. */
+  cancelarHref?: string;
+}
+
+export function TurnoForm({ action, valoresIniciales, textoBoton, cancelarHref }: TurnoFormProps) {
+  const [tipo, setTipo] = useState<TipoTurnoDB>(valoresIniciales?.tipo ?? "normal");
+
+  return (
+    <form action={action} className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-1.5">
+        <Label htmlFor="fecha">Fecha</Label>
+        <Input id="fecha" name="fecha" type="date" defaultValue={valoresIniciales?.fecha} required />
+      </div>
+
+      <div className="grid gap-1.5">
+        <Label htmlFor="tipo">Tipo</Label>
+        <select
+          id="tipo"
+          name="tipo"
+          value={tipo}
+          onChange={(e) => setTipo(e.target.value as TipoTurnoDB)}
+          className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
+        >
+          <option value="normal">Normal</option>
+          <option value="feriado">Feriado</option>
+          <option value="libre">Libre</option>
+        </select>
+      </div>
+
+      {tipo !== "libre" && (
+        <>
+          <div className="grid gap-1.5">
+            <Label htmlFor="horaInicio">Hora de entrada</Label>
+            <Input
+              id="horaInicio"
+              name="horaInicio"
+              type="time"
+              defaultValue={valoresIniciales?.horaInicio}
+              required
+            />
+          </div>
+          <div className="grid gap-1.5">
+            <Label htmlFor="horaFin">Hora de salida</Label>
+            <Input id="horaFin" name="horaFin" type="time" defaultValue={valoresIniciales?.horaFin} required />
+          </div>
+          <div className="grid gap-1.5">
+            <Label htmlFor="descansoMin">Descanso (min)</Label>
+            <Input
+              id="descansoMin"
+              name="descansoMin"
+              type="number"
+              min={0}
+              defaultValue={valoresIniciales?.descansoMin ?? 0}
+            />
+          </div>
+        </>
+      )}
+
+      <div className="grid gap-1.5 sm:col-span-2">
+        <Label htmlFor="nota">Nota (opcional)</Label>
+        <Textarea id="nota" name="nota" defaultValue={valoresIniciales?.nota} />
+      </div>
+
+      <div className="flex gap-2 sm:col-span-2">
+        <Button type="submit">{textoBoton}</Button>
+        {cancelarHref && (
+          <Link href={cancelarHref} className={buttonVariants({ variant: "outline" })}>
+            Cancelar
+          </Link>
+        )}
+      </div>
+    </form>
+  );
+}

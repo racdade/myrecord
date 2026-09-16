@@ -1,0 +1,109 @@
+// Tipos manuales de las tablas de Supabase usadas en la Fase 1.
+// Cuando el proyecto esté vinculado con el CLI, esto se puede reemplazar por
+// `supabase gen types typescript` para que se generen solos.
+//
+// Todo acá usa `type`, no `interface`: los genéricos de @supabase/postgrest-js
+// (Omit, keyof, condicionales) no resuelven bien sobre una interface y
+// `.insert()`/`.update()` terminan tipados como `never` sin avisar en el
+// punto donde se declara el tipo (documentado y confirmado a mano).
+
+export type TipoTurnoDB = "normal" | "feriado" | "libre";
+export type OrigenTurnoDB = "manual" | "texto" | "foto" | "calendar";
+export type ModoExtrasDB = "dia" | "semana" | "ambos";
+export type EstadoImportacionDB = "pendiente" | "listo" | "error" | "confirmado";
+
+export type Json = string | number | boolean | null | { [clave: string]: Json } | Json[];
+
+export type ProfileRow = {
+  id: string;
+  nombre: string | null;
+  email: string | null;
+  avatar_url: string | null;
+  tarifa_hora: number;
+  moneda: string;
+  zona_horaria: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type OvertimeRuleRow = {
+  id: string;
+  user_id: string;
+  team_id: string | null;
+  horas_dia: number;
+  horas_semana: number;
+  modo: ModoExtrasDB;
+  tramo1_horas: number;
+  tramo1_pct: number;
+  tramo2_pct: number;
+  feriado_pct: number;
+  nocturno_pct: number;
+  nocturno_inicio: string;
+  nocturno_fin: string;
+  inicio_semana: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ShiftRow = {
+  id: string;
+  user_id: string;
+  team_id: string | null;
+  fecha: string;
+  hora_inicio: string | null;
+  hora_fin: string | null;
+  descanso_min: number;
+  tipo: TipoTurnoDB;
+  origen: OrigenTurnoDB;
+  nota: string | null;
+  gcal_event_id: string | null;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ScheduleImportRow = {
+  id: string;
+  user_id: string;
+  team_id: string | null;
+  imagen_path: string | null;
+  texto: string | null;
+  resultado_json: Json | null;
+  estado: EstadoImportacionDB;
+  created_at: string;
+};
+
+export type Database = {
+  public: {
+    Tables: {
+      profiles: {
+        Row: ProfileRow;
+        Insert: Partial<ProfileRow> & { id: string };
+        Update: Partial<ProfileRow>;
+        Relationships: [];
+      };
+      overtime_rules: {
+        Row: OvertimeRuleRow;
+        Insert: Partial<OvertimeRuleRow> & { user_id: string };
+        Update: Partial<OvertimeRuleRow>;
+        Relationships: [];
+      };
+      shifts: {
+        Row: ShiftRow;
+        Insert: Partial<ShiftRow> & { user_id: string; fecha: string };
+        Update: Partial<ShiftRow>;
+        Relationships: [];
+      };
+      schedule_imports: {
+        Row: ScheduleImportRow;
+        Insert: Partial<ScheduleImportRow> & { user_id: string };
+        Update: Partial<ScheduleImportRow>;
+        Relationships: [];
+      };
+    };
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
+    Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
+  };
+};
