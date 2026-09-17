@@ -20,10 +20,11 @@ export default async function DashboardLayout({
   return (
     <div className="min-h-svh">
       <header className="border-b">
-        <div className="mx-auto flex max-w-4xl items-center justify-between p-4">
-          <nav className="flex gap-4 text-sm font-medium">
+        <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-2 p-4">
+          <nav className="flex flex-wrap gap-4 text-sm font-medium">
             <Link href="/">Dashboard</Link>
             <Link href="/turnos">Turnos</Link>
+            <Link href="/reportes">Reportes</Link>
             <Link href="/equipo">Equipo</Link>
             <Link href="/planes">Planes</Link>
           </nav>

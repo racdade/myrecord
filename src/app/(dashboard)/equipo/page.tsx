@@ -212,7 +212,13 @@ export default async function EquipoPage() {
                     <TableCell>{fila.horasSemana.toFixed(1)} h</TableCell>
                     <TableCell>{fila.extrasSemana.toFixed(1)} h</TableCell>
                     <TableCell>{fila.pagoEstimado}</TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="flex justify-end gap-2 text-right">
+                      <Link
+                        href={`/equipo/${fila.userId}`}
+                        className={buttonVariants({ variant: "outline", size: "sm" })}
+                      >
+                        Ver detalle
+                      </Link>
                       {fila.userId !== equipo.owner_id && (
                         <form action={quitarMiembro.bind(null, equipo.id, fila.userId)}>
                           <Button variant="destructive" size="sm" type="submit">

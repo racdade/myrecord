@@ -117,6 +117,12 @@ export type SubscriptionRow = {
   updated_at: string;
 };
 
+export type HolidayRow = {
+  fecha: string;
+  nombre: string;
+  pais: string;
+};
+
 export type GoogleConnectionRow = {
   user_id: string;
   refresh_token: string;
@@ -194,6 +200,12 @@ export type Database = {
         Row: GoogleConnectionRow;
         Insert: Partial<GoogleConnectionRow> & { user_id: string; refresh_token: string };
         Update: Partial<GoogleConnectionRow>;
+        Relationships: [];
+      };
+      holidays: {
+        Row: HolidayRow;
+        Insert: Partial<HolidayRow> & { fecha: string; nombre: string };
+        Update: Partial<HolidayRow>;
         Relationships: [];
       };
     };
