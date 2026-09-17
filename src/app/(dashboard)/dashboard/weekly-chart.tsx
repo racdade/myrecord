@@ -1,6 +1,7 @@
 "use client";
 
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { useTranslations } from "next-intl";
 
 export interface DatoDiaGrafico {
   dia: string;
@@ -9,6 +10,8 @@ export interface DatoDiaGrafico {
 }
 
 export function WeeklyChart({ datos }: { datos: DatoDiaGrafico[] }) {
+  const t = useTranslations("reportes");
+
   return (
     <ResponsiveContainer width="100%" height={260}>
       <BarChart data={datos}>
@@ -17,8 +20,8 @@ export function WeeklyChart({ datos }: { datos: DatoDiaGrafico[] }) {
         <YAxis fontSize={12} tickLine={false} width={32} />
         <Tooltip formatter={(value) => `${Number(value).toFixed(2)} h`} />
         <Legend />
-        <Bar dataKey="normales" name="Normales" stackId="horas" fill="#2563eb" />
-        <Bar dataKey="extra" name="Extra" stackId="horas" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+        <Bar dataKey="normales" name={t("horas")} stackId="horas" fill="#2563eb" />
+        <Bar dataKey="extra" name={t("extras")} stackId="horas" fill="#f59e0b" radius={[4, 4, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );

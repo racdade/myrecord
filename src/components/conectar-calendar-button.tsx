@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
 export function ConectarCalendarButton() {
+  const t = useTranslations("conectarCalendar");
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,12 +25,12 @@ export function ConectarCalendarButton() {
         },
       });
       if (error) {
-        setError("No se pudo conectar. Intenta de nuevo.");
+        setError(t("error"));
         setCargando(false);
       }
     } catch (err) {
       console.error(err);
-      setError("No se pudo conectar. Intenta de nuevo.");
+      setError(t("error"));
       setCargando(false);
     }
   }
@@ -36,7 +38,7 @@ export function ConectarCalendarButton() {
   return (
     <div className="flex flex-col gap-2">
       <Button type="button" onClick={conectar} disabled={cargando}>
-        {cargando ? "Redirigiendo…" : "Conectar Google Calendar"}
+        {cargando ? t("redirigiendo") : t("conectar")}
       </Button>
       {error && <p className="text-sm text-destructive">{error}</p>}
     </div>

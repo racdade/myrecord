@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -6,13 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/server";
 import { cancelarPlan, guardarPersonasExtra, marcarComoPagado } from "../equipo/actions";
-
-const ETIQUETA_ESTADO: Record<string, string> = {
-  trial: "En prueba",
-  activa: "Activa",
-  vencida: "Vencida",
-  cancelada: "Cancelada",
-};
 
 function diasRestantes(fechaISO: string): number {
   const diff = new Date(fechaISO).getTime() - Date.now();
@@ -26,6 +20,9 @@ export default async function PlanesPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  const t = await getTranslations("planes");
+  const tc = await getTranslations("comun");
+
   const { data: membresias } = await supabase
     .from("team_members")
     .select("team_id, rol")
@@ -37,22 +34,28 @@ export default async function PlanesPage() {
       <div className="flex flex-col gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Planes</CardTitle>
+            <CardTitle>{t("titulo")}</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-2 text-sm text-muted-foreground">
             <p>
-              <strong>Personal (gratis):</strong> registra y ve solo tus propias horas. Incluye foto,
-              texto, dashboard y (más adelante) Google Calendar.
+              <strong>{t("personalGratisTitulo")}:</strong> {t("personalGratisDescripcion")}
             </p>
             <p>
-              <strong>Administración:</strong> crea un equipo, invita personas y ve las horas de todos.
-              Se administra desde <code>/equipo</code>.
+              <strong>{t("administracionTitulo")}:</strong> {t("administracionDescripcion")}{" "}
+              <code>/equipo</code>.
             </p>
           </CardContent>
         </Card>
       </div>
     );
   }
+
+  const ETIQUETA_ESTADO: Record<string, string> = {
+    trial: t("estadoTrial"),
+    activa: t("estadoActiva"),
+    vencida: t("estadoVencida"),
+    cancelada: t("estadoCancelada"),
+  };
 
   const [{ data: equipo }, { data: suscripcion }, { count: personasUsadas }] = await Promise.all([
     supabase.from("teams").select("id, nombre").eq("id", membresia.team_id).single(),
@@ -72,7 +75,7 @@ export default async function PlanesPage() {
     <div className="flex flex-col gap-6">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Facturación — {equipo.nombre}</CardTitle>
+          <CardTitle>{t("facturacion", { equipo: equipo.nombre })}</CardTitle>
           <Badge variant={activa ? "secondary" : "destructive"}>
             {ETIQUETA_ESTADO[suscripcion.estado] ?? suscripcion.estado}
           </Badge>
@@ -81,51 +84,41 @@ export default async function PlanesPage() {
           {suscripcion.estado === "trial" && (
             <p className="text-sm text-muted-foreground">
               {activa
-                ? `Prueba gratis: quedan ${diasRestantes(suscripcion.trial_fin)} día(s).`
-                : "Tu prueba gratis venció."}
+                ? t("pruebaGratisQuedan", { dias: diasRestantes(suscripcion.trial_fin) })
+                : t("pruebaGratisVencio")}
             </p>
           )}
           {suscripcion.estado === "activa" && suscripcion.periodo_fin && (
             <p className="text-sm text-muted-foreground">
-              Plan activo hasta {suscripcion.periodo_fin.slice(0, 10)}.
+              {t("planActivoHasta", { fecha: suscripcion.periodo_fin.slice(0, 10) })}
             </p>
           )}
-          {!activa && (
-            <p className="text-sm text-destructive">
-              El equipo está en modo solo lectura: no se pueden crear turnos de equipo ni invitar hasta
-              renovar.
-            </p>
-          )}
+          {!activa && <p className="text-sm text-destructive">{t("soloLecturaAviso")}</p>}
 
-          <p className="text-sm">
-            Personas: {personasUsadas ?? 0} de {limite} incluidas.
-          </p>
+          <p className="text-sm">{t("personasDeIncluidas", { usadas: personasUsadas ?? 0, limite })}</p>
 
           <div className="flex flex-wrap gap-2">
             {!activa && (
               <form action={marcarComoPagado.bind(null, equipo.id)}>
-                <Button type="submit">Marcar como pagado (prueba)</Button>
+                <Button type="submit">{t("marcarComoPagado")}</Button>
               </form>
             )}
             {suscripcion.estado !== "cancelada" && (
               <form action={cancelarPlan.bind(null, equipo.id)}>
                 <Button type="submit" variant="destructive">
-                  Cancelar plan
+                  {t("cancelarPlan")}
                 </Button>
               </form>
             )}
           </div>
 
-          <p className="text-xs text-muted-foreground">
-            El pago todavía es simulado — no hay una pasarela conectada. &quot;Marcar como pagado&quot;
-            no cobra nada de verdad.
-          </p>
+          <p className="text-xs text-muted-foreground">{t("pagoSimuladoAviso")}</p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Personas extra</CardTitle>
+          <CardTitle>{t("personasExtraTitulo")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form
@@ -134,7 +127,7 @@ export default async function PlanesPage() {
           >
             <div className="grid gap-1.5">
               <Label htmlFor="personasExtra">
-                Personas extra (además de las {suscripcion.personas_incluidas} incluidas)
+                {t("personasExtraLabel", { incluidas: suscripcion.personas_incluidas })}
               </Label>
               <Input
                 id="personasExtra"
@@ -145,7 +138,7 @@ export default async function PlanesPage() {
                 className="w-32"
               />
             </div>
-            <Button type="submit">Guardar</Button>
+            <Button type="submit">{tc("guardar")}</Button>
           </form>
         </CardContent>
       </Card>

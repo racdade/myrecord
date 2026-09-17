@@ -1,6 +1,7 @@
 import { eachDayOfInterval, format, parseISO } from "date-fns";
-import { es } from "date-fns/locale";
+import { enUS, es } from "date-fns/locale";
 import { redirect } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +14,8 @@ import { ConectarCalendarButton } from "@/components/conectar-calendar-button";
 import { actualizarAjustes } from "../actions";
 import { desconectarGoogleCalendar } from "../calendario-actions";
 import { WeeklyChart, type DatoDiaGrafico } from "./weekly-chart";
+
+const LOCALES_DATE_FNS = { es, en: enUS };
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -67,6 +70,9 @@ export default async function DashboardPage() {
 
   const formatoMoneda = new Intl.NumberFormat("es-PE", { style: "currency", currency: moneda });
 
+  const locale = await getLocale();
+  const dateFnsLocale = LOCALES_DATE_FNS[locale as "es" | "en"] ?? es;
+
   const diasSemana = eachDayOfInterval({ start: parseISO(inicioSemana), end: parseISO(finSemana) });
   const limiteDiaMin = reglas.horasDia * 60;
   const datosGrafico: DatoDiaGrafico[] = diasSemana.map((dia) => {
@@ -75,24 +81,27 @@ export default async function DashboardPage() {
       .filter((t) => t.fecha === fecha)
       .reduce((total, turno) => total + minutosNetosTurno(filaATurno(turno)), 0);
     return {
-      dia: format(dia, "EEE d", { locale: es }),
+      dia: format(dia, "EEE d", { locale: dateFnsLocale }),
       normales: minutosAHoras(Math.min(netosDia, limiteDiaMin)),
       extra: minutosAHoras(Math.max(0, netosDia - limiteDiaMin)),
     };
   });
 
+  const t = await getTranslations("dashboard");
+  const tc = await getTranslations("comun");
+
   return (
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <TarjetaResumen titulo="Horas de la semana" valor={`${horasSemana.toFixed(1)} h`} />
-        <TarjetaResumen titulo="Extras de la semana" valor={`${extrasSemana.toFixed(1)} h`} />
-        <TarjetaResumen titulo="Horas del mes" valor={`${horasMes.toFixed(1)} h`} />
-        <TarjetaResumen titulo="Pago estimado (semana)" valor={formatoMoneda.format(pagoEstimadoSemana)} />
+        <TarjetaResumen titulo={t("horasDeLaSemana")} valor={`${horasSemana.toFixed(1)} h`} />
+        <TarjetaResumen titulo={t("extrasDeLaSemana")} valor={`${extrasSemana.toFixed(1)} h`} />
+        <TarjetaResumen titulo={t("horasDelMes")} valor={`${horasMes.toFixed(1)} h`} />
+        <TarjetaResumen titulo={t("pagoEstimadoSemana")} valor={formatoMoneda.format(pagoEstimadoSemana)} />
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Horas por día — esta semana</CardTitle>
+          <CardTitle>{t("horasPorDia")}</CardTitle>
         </CardHeader>
         <CardContent>
           <WeeklyChart datos={datosGrafico} />
@@ -101,12 +110,12 @@ export default async function DashboardPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Tarifa y reglas de extras</CardTitle>
+          <CardTitle>{t("tarifaYReglas")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form action={actualizarAjustes} className="grid gap-4 sm:grid-cols-3">
             <div className="grid gap-1.5">
-              <Label htmlFor="nombre">Nombre</Label>
+              <Label htmlFor="nombre">{t("nombre")}</Label>
               <Input
                 id="nombre"
                 name="nombre"
@@ -117,7 +126,7 @@ export default async function DashboardPage() {
               />
             </div>
             <div className="grid gap-1.5">
-              <Label htmlFor="fechaNacimiento">Fecha de nacimiento (opcional)</Label>
+              <Label htmlFor="fechaNacimiento">{t("fechaNacimiento")}</Label>
               <Input
                 id="fechaNacimiento"
                 name="fechaNacimiento"
@@ -126,7 +135,7 @@ export default async function DashboardPage() {
               />
             </div>
             <div className="grid gap-1.5">
-              <Label htmlFor="tarifaHora">Tarifa por hora ({moneda})</Label>
+              <Label htmlFor="tarifaHora">{t("tarifaPorHora", { moneda })}</Label>
               <Input
                 id="tarifaHora"
                 name="tarifaHora"
@@ -138,7 +147,7 @@ export default async function DashboardPage() {
               />
             </div>
             <div className="grid gap-1.5">
-              <Label htmlFor="horasDia">Horas normales al día</Label>
+              <Label htmlFor="horasDia">{t("horasNormalesDia")}</Label>
               <Input
                 id="horasDia"
                 name="horasDia"
@@ -151,7 +160,7 @@ export default async function DashboardPage() {
               />
             </div>
             <div className="grid gap-1.5">
-              <Label htmlFor="horasSemana">Horas normales a la semana</Label>
+              <Label htmlFor="horasSemana">{t("horasNormalesSemana")}</Label>
               <Input
                 id="horasSemana"
                 name="horasSemana"
@@ -164,20 +173,20 @@ export default async function DashboardPage() {
               />
             </div>
             <div className="grid gap-1.5">
-              <Label htmlFor="modo">Cuándo cuenta como extra</Label>
+              <Label htmlFor="modo">{t("cuandoCuentaComoExtra")}</Label>
               <select
                 id="modo"
                 name="modo"
                 defaultValue={reglas.modo}
                 className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
               >
-                <option value="dia">Por día</option>
-                <option value="semana">Por semana</option>
-                <option value="ambos">Ambos</option>
+                <option value="dia">{t("porDia")}</option>
+                <option value="semana">{t("porSemana")}</option>
+                <option value="ambos">{t("ambos")}</option>
               </select>
             </div>
             <div className="grid gap-1.5">
-              <Label htmlFor="tramo1Horas">Horas al tramo 1 (25% por defecto)</Label>
+              <Label htmlFor="tramo1Horas">{t("horasTramo1")}</Label>
               <Input
                 id="tramo1Horas"
                 name="tramo1Horas"
@@ -189,7 +198,7 @@ export default async function DashboardPage() {
               />
             </div>
             <div className="grid gap-1.5">
-              <Label htmlFor="tramo1Pct">Recargo tramo 1 (ej. 0.25 = 25%)</Label>
+              <Label htmlFor="tramo1Pct">{t("recargoTramo1")}</Label>
               <Input
                 id="tramo1Pct"
                 name="tramo1Pct"
@@ -201,7 +210,7 @@ export default async function DashboardPage() {
               />
             </div>
             <div className="grid gap-1.5">
-              <Label htmlFor="tramo2Pct">Recargo tramo 2 (ej. 0.35 = 35%)</Label>
+              <Label htmlFor="tramo2Pct">{t("recargoTramo2")}</Label>
               <Input
                 id="tramo2Pct"
                 name="tramo2Pct"
@@ -213,7 +222,7 @@ export default async function DashboardPage() {
               />
             </div>
             <div className="flex items-end sm:col-span-3">
-              <Button type="submit">Guardar</Button>
+              <Button type="submit">{tc("guardar")}</Button>
             </div>
           </form>
         </CardContent>
@@ -221,27 +230,21 @@ export default async function DashboardPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Google Calendar</CardTitle>
+          <CardTitle>{t("googleCalendar")}</CardTitle>
         </CardHeader>
         <CardContent>
           {conexionCalendar ? (
             <div className="flex flex-col gap-2">
-              <p className="text-sm text-muted-foreground">
-                Conectado. Ve a &quot;Turnos&quot; y usa &quot;Sincronizar semana&quot; para crear o
-                actualizar los eventos.
-              </p>
+              <p className="text-sm text-muted-foreground">{t("conectado")}</p>
               <form action={desconectarGoogleCalendar}>
                 <Button type="submit" variant="outline">
-                  Desconectar
+                  {t("desconectar")}
                 </Button>
               </form>
             </div>
           ) : (
             <div className="flex flex-col gap-2">
-              <p className="text-sm text-muted-foreground">
-                Conecta tu cuenta de Google para sincronizar tus turnos con un calendario aparte
-                (&quot;Turnos de trabajo&quot;), sin mezclar con tus eventos personales.
-              </p>
+              <p className="text-sm text-muted-foreground">{t("conectaTuCuenta")}</p>
               <ConectarCalendarButton />
             </div>
           )}
