@@ -24,6 +24,7 @@ export default async function DashboardLayout({
           <nav className="flex gap-4 text-sm font-medium">
             <Link href="/">Dashboard</Link>
             <Link href="/turnos">Turnos</Link>
+            <Link href="/equipo">Equipo</Link>
           </nav>
           <SignOutButton />
         </div>

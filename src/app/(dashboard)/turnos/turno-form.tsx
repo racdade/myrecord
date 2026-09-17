@@ -15,6 +15,7 @@ export interface TurnoFormValoresIniciales {
   horaFin?: string;
   descansoMin?: number;
   nota?: string;
+  teamId?: string | null;
 }
 
 interface TurnoFormProps {
@@ -23,9 +24,11 @@ interface TurnoFormProps {
   textoBoton: string;
   /** Link de "Cancelar" (modo edición); se omite en el formulario de creación. */
   cancelarHref?: string;
+  /** Si la persona pertenece a un equipo, permite marcar el turno como suyo. */
+  equipo?: { id: string; nombre: string } | null;
 }
 
-export function TurnoForm({ action, valoresIniciales, textoBoton, cancelarHref }: TurnoFormProps) {
+export function TurnoForm({ action, valoresIniciales, textoBoton, cancelarHref, equipo }: TurnoFormProps) {
   const [tipo, setTipo] = useState<TipoTurnoDB>(valoresIniciales?.tipo ?? "normal");
 
   return (
@@ -83,6 +86,21 @@ export function TurnoForm({ action, valoresIniciales, textoBoton, cancelarHref }
         <Label htmlFor="nota">Nota (opcional)</Label>
         <Textarea id="nota" name="nota" defaultValue={valoresIniciales?.nota} />
       </div>
+
+      {equipo && (
+        <div className="grid gap-1.5">
+          <Label htmlFor="teamId">Para</Label>
+          <select
+            id="teamId"
+            name="teamId"
+            defaultValue={valoresIniciales?.teamId ?? ""}
+            className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
+          >
+            <option value="">Personal</option>
+            <option value={equipo.id}>{equipo.nombre}</option>
+          </select>
+        </div>
+      )}
 
       <div className="flex gap-2 sm:col-span-2">
         <Button type="submit">{textoBoton}</Button>

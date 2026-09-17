@@ -35,14 +35,20 @@ export default async function TurnosPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: turnos, error } = await supabase
-    .from("shifts")
-    .select("*")
-    .order("fecha", { ascending: false })
-    .limit(60);
+  const [{ data: turnos, error }, { data: membresias }] = await Promise.all([
+    supabase.from("shifts").select("*").eq("user_id", user.id).order("fecha", { ascending: false }).limit(60),
+    supabase.from("team_members").select("team_id").eq("user_id", user.id),
+  ]);
 
   if (error) {
     throw new Error(error.message);
+  }
+
+  const teamId = membresias?.[0]?.team_id;
+  let equipo: { id: string; nombre: string } | null = null;
+  if (teamId) {
+    const { data: equipoRow } = await supabase.from("teams").select("id, nombre").eq("id", teamId).single();
+    equipo = equipoRow ?? null;
   }
 
   const turnoEnEdicion = editar ? turnos?.find((t) => t.id === editar) : undefined;
@@ -65,6 +71,7 @@ export default async function TurnosPage({
               action={actualizarTurno.bind(null, turnoEnEdicion.id)}
               textoBoton="Guardar cambios"
               cancelarHref="/turnos"
+              equipo={equipo}
               valoresIniciales={{
                 fecha: turnoEnEdicion.fecha,
                 tipo: turnoEnEdicion.tipo,
@@ -72,10 +79,11 @@ export default async function TurnosPage({
                 horaFin: turnoEnEdicion.hora_fin ?? undefined,
                 descansoMin: turnoEnEdicion.descanso_min,
                 nota: turnoEnEdicion.nota ?? undefined,
+                teamId: turnoEnEdicion.team_id,
               }}
             />
           ) : (
-            <TurnoForm action={crearTurno} textoBoton="Agregar turno" />
+            <TurnoForm action={crearTurno} textoBoton="Agregar turno" equipo={equipo} />
           )}
         </CardContent>
       </Card>

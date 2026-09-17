@@ -123,6 +123,7 @@ interface FilaConfirmada {
 export async function guardarTurnosImportados(
   scheduleImportId: string,
   origen: Extract<OrigenTurnoDB, "texto" | "foto">,
+  teamId: string | null,
   filas: FilaConfirmada[],
 ) {
   const { supabase, user } = await usuarioActual();
@@ -148,6 +149,7 @@ export async function guardarTurnosImportados(
     descanso_min: turno.descansoMin,
     nota: turno.nota || null,
     origen,
+    team_id: teamId,
   }));
 
   const { error: errorInsert } = await supabase.from("shifts").insert(nuevosTurnos);

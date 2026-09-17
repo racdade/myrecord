@@ -13,6 +13,14 @@ export default async function ImportarHorarioPage() {
 
   const { inicio } = rangoSemanaActual();
 
+  const { data: membresias } = await supabase.from("team_members").select("team_id").eq("user_id", user.id);
+  const teamId = membresias?.[0]?.team_id;
+  let equipo: { id: string; nombre: string } | null = null;
+  if (teamId) {
+    const { data: equipoRow } = await supabase.from("teams").select("id, nombre").eq("id", teamId).single();
+    equipo = equipoRow ?? null;
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <Card>
@@ -20,7 +28,7 @@ export default async function ImportarHorarioPage() {
           <CardTitle>Agregar horario con foto o texto</CardTitle>
         </CardHeader>
         <CardContent>
-          <ImportarHorarioForm semanaInicioPorDefecto={inicio} />
+          <ImportarHorarioForm semanaInicioPorDefecto={inicio} equipo={equipo} />
         </CardContent>
       </Card>
     </div>

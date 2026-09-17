@@ -6,15 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/server";
-import {
-  calcularPagoEstimado,
-  minutosAHoras,
-  minutosNetosTurno,
-  REGLAS_POR_DEFECTO,
-  resumirSemana,
-  type ReglasExtras,
-} from "@/lib/calc";
-import { filaATurno } from "@/lib/shift-mapper";
+import { calcularPagoEstimado, minutosAHoras, minutosNetosTurno, resumirSemana } from "@/lib/calc";
+import { filaAReglas, filaATurno } from "@/lib/shift-mapper";
 import { fechaISO, inicioMes, rangoSemanaActual } from "@/lib/semana";
 import { actualizarAjustes } from "./actions";
 import { WeeklyChart, type DatoDiaGrafico } from "./weekly-chart";
@@ -31,20 +24,7 @@ export default async function DashboardPage() {
     supabase.from("overtime_rules").select("*").eq("user_id", user.id).single(),
   ]);
 
-  const reglas: ReglasExtras = reglaRow
-    ? {
-        horasDia: Number(reglaRow.horas_dia),
-        horasSemana: Number(reglaRow.horas_semana),
-        modo: reglaRow.modo,
-        tramo1Horas: Number(reglaRow.tramo1_horas),
-        tramo1Pct: Number(reglaRow.tramo1_pct),
-        tramo2Pct: Number(reglaRow.tramo2_pct),
-        feriadoPct: Number(reglaRow.feriado_pct),
-        nocturnoPct: Number(reglaRow.nocturno_pct),
-        nocturnoInicio: reglaRow.nocturno_inicio.slice(0, 5),
-        nocturnoFin: reglaRow.nocturno_fin.slice(0, 5),
-      }
-    : REGLAS_POR_DEFECTO;
+  const reglas = filaAReglas(reglaRow);
 
   const tarifaHora = profile?.tarifa_hora ?? 0;
   const moneda = profile?.moneda ?? "PEN";
@@ -56,6 +36,7 @@ export default async function DashboardPage() {
   const { data: turnosRango, error } = await supabase
     .from("shifts")
     .select("*")
+    .eq("user_id", user.id)
     .gte("fecha", rangoInicio)
     .lte("fecha", finSemana);
 

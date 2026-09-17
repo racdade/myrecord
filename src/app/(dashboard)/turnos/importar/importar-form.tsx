@@ -31,6 +31,7 @@ interface FilaEditable {
 interface Revision {
   scheduleImportId: string;
   origen: "texto" | "foto";
+  teamId: string | null;
   filas: FilaEditable[];
 }
 
@@ -43,7 +44,12 @@ function nombreDia(fechaISO: string): string {
   return nombre.charAt(0).toUpperCase() + nombre.slice(1);
 }
 
-export function ImportarHorarioForm({ semanaInicioPorDefecto }: { semanaInicioPorDefecto: string }) {
+interface ImportarHorarioFormProps {
+  semanaInicioPorDefecto: string;
+  equipo?: { id: string; nombre: string } | null;
+}
+
+export function ImportarHorarioForm({ semanaInicioPorDefecto, equipo }: ImportarHorarioFormProps) {
   const router = useRouter();
   const [modo, setModo] = useState<"foto" | "texto">("foto");
   const [semanaInicio, setSemanaInicio] = useState(semanaInicioPorDefecto);
@@ -65,6 +71,7 @@ export function ImportarHorarioForm({ semanaInicioPorDefecto }: { semanaInicioPo
       setRevision({
         scheduleImportId: resultado.scheduleImportId,
         origen: modo,
+        teamId: String(formData.get("teamId") ?? "").trim() || null,
         filas: resultado.turnos.map((turno) => ({
           fecha: turno.fecha,
           tipo: turno.tipo,
@@ -96,7 +103,7 @@ export function ImportarHorarioForm({ semanaInicioPorDefecto }: { semanaInicioPo
     setError(null);
     iniciarGuardar(async () => {
       try {
-        await guardarTurnosImportados(revision.scheduleImportId, revision.origen, revision.filas);
+        await guardarTurnosImportados(revision.scheduleImportId, revision.origen, revision.teamId, revision.filas);
         router.push("/turnos");
       } catch (err) {
         setError(err instanceof Error ? err.message : "No se pudo guardar.");
@@ -236,6 +243,16 @@ export function ImportarHorarioForm({ semanaInicioPorDefecto }: { semanaInicioPo
             placeholder='Ej: "lun y mar 12pm a 10pm, miérc 2 a 10pm, viernes libre"'
             required
           />
+        </div>
+      )}
+
+      {equipo && (
+        <div className="grid gap-1.5 sm:max-w-xs">
+          <Label htmlFor="teamId">Para</Label>
+          <select id="teamId" name="teamId" defaultValue="" className={CLASE_SELECT}>
+            <option value="">Personal</option>
+            <option value={equipo.id}>{equipo.nombre}</option>
+          </select>
         </div>
       )}
 

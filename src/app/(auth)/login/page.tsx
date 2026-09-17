@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
-export default function LoginPage() {
+function BotonGoogle() {
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next") || "/";
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,7 +19,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
         },
       });
       if (error) {
@@ -31,6 +34,17 @@ export default function LoginPage() {
   }
 
   return (
+    <>
+      <Button onClick={iniciarSesion} disabled={cargando} size="lg">
+        {cargando ? "Redirigiendo…" : "Continuar con Google"}
+      </Button>
+      {error && <p className="text-sm text-destructive">{error}</p>}
+    </>
+  );
+}
+
+export default function LoginPage() {
+  return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 p-6">
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-semibold">app-horas</h1>
@@ -38,10 +52,9 @@ export default function LoginPage() {
           Registra tus horas de trabajo y horas extra.
         </p>
       </div>
-      <Button onClick={iniciarSesion} disabled={cargando} size="lg">
-        {cargando ? "Redirigiendo…" : "Continuar con Google"}
-      </Button>
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      <Suspense fallback={<Button size="lg" disabled>Cargando…</Button>}>
+        <BotonGoogle />
+      </Suspense>
     </div>
   );
 }

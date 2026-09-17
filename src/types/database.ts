@@ -11,6 +11,7 @@ export type TipoTurnoDB = "normal" | "feriado" | "libre";
 export type OrigenTurnoDB = "manual" | "texto" | "foto" | "calendar";
 export type ModoExtrasDB = "dia" | "semana" | "ambos";
 export type EstadoImportacionDB = "pendiente" | "listo" | "error" | "confirmado";
+export type RolEquipoDB = "admin" | "miembro";
 
 export type Json = string | number | boolean | null | { [clave: string]: Json } | Json[];
 
@@ -22,6 +23,7 @@ export type ProfileRow = {
   tarifa_hora: number;
   moneda: string;
   zona_horaria: string;
+  admin_habilitado: boolean;
   created_at: string;
   updated_at: string;
 };
@@ -73,6 +75,31 @@ export type ScheduleImportRow = {
   created_at: string;
 };
 
+export type TeamRow = {
+  id: string;
+  nombre: string;
+  owner_id: string;
+  created_at: string;
+};
+
+export type TeamMemberRow = {
+  team_id: string;
+  user_id: string;
+  rol: RolEquipoDB;
+  created_at: string;
+};
+
+export type InvitationRow = {
+  id: string;
+  team_id: string;
+  email: string | null;
+  rol: RolEquipoDB;
+  token: string;
+  expira_en: string;
+  aceptada_en: string | null;
+  created_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -100,9 +127,36 @@ export type Database = {
         Update: Partial<ScheduleImportRow>;
         Relationships: [];
       };
+      teams: {
+        Row: TeamRow;
+        Insert: Partial<TeamRow> & { nombre: string; owner_id: string };
+        Update: Partial<TeamRow>;
+        Relationships: [];
+      };
+      team_members: {
+        Row: TeamMemberRow;
+        Insert: Partial<TeamMemberRow> & { team_id: string; user_id: string };
+        Update: Partial<TeamMemberRow>;
+        Relationships: [];
+      };
+      invitations: {
+        Row: InvitationRow;
+        Insert: Partial<InvitationRow> & { team_id: string };
+        Update: Partial<InvitationRow>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      obtener_invitacion: {
+        Args: { p_token: string };
+        Returns: { equipo_nombre: string | null; rol: RolEquipoDB | null; valida: boolean }[];
+      };
+      aceptar_invitacion: {
+        Args: { p_token: string };
+        Returns: void;
+      };
+    };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };

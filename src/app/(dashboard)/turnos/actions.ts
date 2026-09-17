@@ -16,6 +16,10 @@ function leerFormulario(formData: FormData) {
   };
 }
 
+function leerTeamId(formData: FormData): string | null {
+  return String(formData.get("teamId") ?? "").trim() || null;
+}
+
 async function usuarioActual() {
   const supabase = await createClient();
   const {
@@ -41,6 +45,7 @@ export async function crearTurno(formData: FormData) {
     hora_fin: tipo === "libre" ? null : horaFin,
     descanso_min: descansoMin,
     nota: nota || null,
+    team_id: leerTeamId(formData),
   });
 
   if (error) throw new Error(error.message);
@@ -66,6 +71,7 @@ export async function actualizarTurno(id: string, formData: FormData) {
       hora_fin: tipo === "libre" ? null : horaFin,
       descanso_min: descansoMin,
       nota: nota || null,
+      team_id: leerTeamId(formData),
     })
     .eq("id", id);
 
