@@ -46,8 +46,26 @@ function BotonGoogle() {
 export default function LoginPage() {
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 p-6">
-      <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-semibold">app-horas</h1>
+      <div className="flex flex-col items-center gap-3 text-center">
+        <svg viewBox="0 0 48 48" width="48" height="48" aria-hidden="true">
+          <path
+            d="M40.4 19.6 A17 17 0 1 1 32 9"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M15 16 L24 24 L37.5 9.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+        <h1 className="text-2xl font-medium tracking-wide">Turnia</h1>
         <p className="max-w-xs text-sm text-muted-foreground">
           Registra tus horas de trabajo y horas extra.
         </p>

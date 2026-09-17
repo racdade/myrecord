@@ -14,5 +14,5 @@ export async function desconectarGoogleCalendar() {
   const { error } = await supabase.from("google_connections").delete().eq("user_id", user.id);
   if (error) throw new Error(error.message);
 
-  revalidatePath("/");
+  revalidatePath("/dashboard");
 }

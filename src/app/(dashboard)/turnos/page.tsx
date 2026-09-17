@@ -60,7 +60,7 @@ export default async function TurnosPage({
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>{turnoEnEdicion ? "Editar turno" : "Agregar turno"}</CardTitle>
           {!turnoEnEdicion && (
-            <Link href="/turnos/importar" className={buttonVariants({ variant: "outline", size: "sm" })}>
+            <Link href="/turnos/importar" className={buttonVariants({ variant: "default", size: "sm" })}>
               Importar con foto o texto
             </Link>
           )}

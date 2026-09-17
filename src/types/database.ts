@@ -25,6 +25,7 @@ export type ProfileRow = {
   moneda: string;
   zona_horaria: string;
   admin_habilitado: boolean;
+  fecha_nacimiento: string | null;
   created_at: string;
   updated_at: string;
 };

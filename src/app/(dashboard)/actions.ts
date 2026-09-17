@@ -7,6 +7,11 @@ import { createClient } from "@/lib/supabase/server";
 
 const ajustesSchema = z.object({
   nombre: z.string().min(1, "El nombre es obligatorio").max(100, "El nombre es muy largo"),
+  fechaNacimiento: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Fecha inválida")
+    .optional()
+    .or(z.literal("")),
   tarifaHora: z.coerce.number().min(0, "La tarifa no puede ser negativa"),
   horasDia: z.coerce.number().min(1).max(24),
   horasSemana: z.coerce.number().min(1).max(168),
@@ -19,6 +24,7 @@ const ajustesSchema = z.object({
 export async function actualizarAjustes(formData: FormData) {
   const parsed = ajustesSchema.safeParse({
     nombre: formData.get("nombre"),
+    fechaNacimiento: formData.get("fechaNacimiento"),
     tarifaHora: formData.get("tarifaHora"),
     horasDia: formData.get("horasDia"),
     horasSemana: formData.get("horasSemana"),
@@ -32,7 +38,8 @@ export async function actualizarAjustes(formData: FormData) {
     throw new Error(parsed.error.issues[0]?.message ?? "Datos inválidos");
   }
 
-  const { nombre, tarifaHora, horasDia, horasSemana, modo, tramo1Horas, tramo1Pct, tramo2Pct } = parsed.data;
+  const { nombre, fechaNacimiento, tarifaHora, horasDia, horasSemana, modo, tramo1Horas, tramo1Pct, tramo2Pct } =
+    parsed.data;
 
   const supabase = await createClient();
   const {
@@ -41,7 +48,10 @@ export async function actualizarAjustes(formData: FormData) {
   if (!user) redirect("/login");
 
   const [{ error: errorPerfil }, { error: errorReglas }] = await Promise.all([
-    supabase.from("profiles").update({ nombre, tarifa_hora: tarifaHora }).eq("id", user.id),
+    supabase
+      .from("profiles")
+      .update({ nombre, tarifa_hora: tarifaHora, fecha_nacimiento: fechaNacimiento || null })
+      .eq("id", user.id),
     supabase
       .from("overtime_rules")
       .update({
@@ -59,4 +69,5 @@ export async function actualizarAjustes(formData: FormData) {
   if (errorReglas) throw new Error(errorReglas.message);
 
   revalidatePath("/");
+  revalidatePath("/dashboard");
 }

@@ -161,6 +161,6 @@ export async function guardarTurnosImportados(
     .eq("id", scheduleImportId);
 
   revalidatePath("/turnos");
-  revalidatePath("/");
+  revalidatePath("/dashboard");
   redirect("/turnos");
 }

@@ -52,7 +52,7 @@ export async function crearTurno(formData: FormData) {
   if (error) throw new Error(error.message);
 
   revalidatePath("/turnos");
-  revalidatePath("/");
+  revalidatePath("/dashboard");
 }
 
 export async function actualizarTurno(id: string, formData: FormData) {
@@ -79,7 +79,7 @@ export async function actualizarTurno(id: string, formData: FormData) {
   if (error) throw new Error(error.message);
 
   revalidatePath("/turnos");
-  revalidatePath("/");
+  revalidatePath("/dashboard");
 }
 
 export async function borrarTurno(id: string) {
@@ -108,5 +108,5 @@ export async function borrarTurno(id: string) {
   }
 
   revalidatePath("/turnos");
-  revalidatePath("/");
+  revalidatePath("/dashboard");
 }
