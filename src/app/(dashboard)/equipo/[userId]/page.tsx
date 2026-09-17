@@ -1,9 +1,11 @@
 import { format, parseISO } from "date-fns";
 import { enUS, es } from "date-fns/locale";
 import Link from "next/link";
+import { Clock } from "lucide-react";
 import { notFound, redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyState } from "@/components/empty-state";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Table,
@@ -144,7 +146,7 @@ export default async function DetalleMiembroPage({
         </CardHeader>
         <CardContent>
           {reporte.turnos.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{tr("noHayTurnos")}</p>
+            <EmptyState icon={Clock} mensaje={tr("noHayTurnos")} />
           ) : (
             <div className="overflow-x-auto">
               <Table>

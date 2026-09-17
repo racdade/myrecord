@@ -293,5 +293,13 @@
     "pagoSimuladoAviso": "Payment is still simulated — no payment gateway is connected. \"Mark as paid\" doesn't charge anything for real.",
     "personasExtraTitulo": "Extra people",
     "personasExtraLabel": "Extra people (on top of the {incluidas} included)"
+  },
+  "errores": {
+    "titulo": "Something went wrong",
+    "descripcion": "An unexpected error occurred. Please try again.",
+    "reintentar": "Try again",
+    "volverAlInicio": "Back to home",
+    "noEncontrada": "We couldn't find this page",
+    "noEncontradaDescripcion": "The link may be mistyped, or the page no longer exists."
   }
 }

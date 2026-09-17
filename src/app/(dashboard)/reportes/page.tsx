@@ -1,9 +1,11 @@
 import { format, parseISO } from "date-fns";
 import { enUS, es } from "date-fns/locale";
 import Link from "next/link";
+import { Clock } from "lucide-react";
 import { redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyState } from "@/components/empty-state";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -134,7 +136,7 @@ export default async function ReportesPage({
         </CardHeader>
         <CardContent>
           {reporte.turnos.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t("noHayTurnos")}</p>
+            <EmptyState icon={Clock} mensaje={t("noHayTurnos")} />
           ) : (
             <div className="overflow-x-auto">
               <Table>

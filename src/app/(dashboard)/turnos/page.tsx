@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { Clock } from "lucide-react";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyState } from "@/components/empty-state";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Table,
@@ -104,7 +106,7 @@ export default async function TurnosPage({
         <CardContent className="flex flex-col gap-4">
           <SincronizarButton />
           {!turnos || turnos.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t("todaviaNoRegistras")}</p>
+            <EmptyState icon={Clock} mensaje={t("todaviaNoRegistras")} />
           ) : (
             <div className="overflow-x-auto">
               <Table>

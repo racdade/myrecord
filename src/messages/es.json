@@ -293,5 +293,13 @@
     "pagoSimuladoAviso": "El pago todavía es simulado — no hay una pasarela conectada. \"Marcar como pagado\" no cobra nada de verdad.",
     "personasExtraTitulo": "Personas extra",
     "personasExtraLabel": "Personas extra (además de las {incluidas} incluidas)"
+  },
+  "errores": {
+    "titulo": "Algo salió mal",
+    "descripcion": "Ocurrió un error inesperado. Intenta de nuevo.",
+    "reintentar": "Reintentar",
+    "volverAlInicio": "Volver al inicio",
+    "noEncontrada": "No encontramos esta página",
+    "noEncontradaDescripcion": "El enlace puede estar mal escrito, o la página ya no existe."
   }
 }
