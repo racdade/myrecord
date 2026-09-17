@@ -1,7 +1,8 @@
 import { headers } from "next/headers";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -119,8 +120,13 @@ export default async function EquipoPage() {
 
   const idsUsuarios = (miembros ?? []).map((m) => m.user_id);
 
-  const [{ data: perfiles }, { data: reglas }, { data: turnosEquipo }, { data: invitaciones }] =
-    await Promise.all([
+  const [
+    { data: perfiles },
+    { data: reglas },
+    { data: turnosEquipo },
+    { data: invitaciones },
+    { data: activa },
+  ] = await Promise.all([
       idsUsuarios.length
         ? supabase.from("profiles").select("*").in("id", idsUsuarios)
         : Promise.resolve({ data: [] as ProfileRow[] }),
@@ -134,6 +140,7 @@ export default async function EquipoPage() {
         .eq("team_id", equipo.id)
         .is("aceptada_en", null)
         .order("created_at", { ascending: false }),
+      supabase.rpc("suscripcion_activa", { p_team_id: equipo.id }),
     ]);
 
   const { inicio: inicioSemana, fin: finSemana } = rangoSemanaActual();
@@ -166,6 +173,20 @@ export default async function EquipoPage() {
 
   return (
     <div className="flex flex-col gap-6">
+      {!activa && (
+        <Card className="border-destructive/50">
+          <CardContent className="flex flex-wrap items-center justify-between gap-2 pt-4">
+            <p className="text-sm text-destructive">
+              La suscripción del equipo no está activa: solo lectura, no se pueden crear turnos de
+              equipo ni invitar hasta renovar.
+            </p>
+            <Link href="/planes" className={buttonVariants({ variant: "outline", size: "sm" })}>
+              Ir a Planes
+            </Link>
+          </CardContent>
+        </Card>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle>{equipo.nombre} — esta semana</CardTitle>
@@ -213,21 +234,27 @@ export default async function EquipoPage() {
           <CardTitle>Invitar a alguien</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          <form action={crearInvitacion.bind(null, equipo.id)} className="flex flex-wrap items-end gap-2">
-            <div className="grid gap-1.5">
-              <Label htmlFor="rol">Rol</Label>
-              <select
-                id="rol"
-                name="rol"
-                defaultValue="miembro"
-                className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
-              >
-                <option value="miembro">Miembro</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-            <Button type="submit">Generar enlace de invitación</Button>
-          </form>
+          {activa ? (
+            <form action={crearInvitacion.bind(null, equipo.id)} className="flex flex-wrap items-end gap-2">
+              <div className="grid gap-1.5">
+                <Label htmlFor="rol">Rol</Label>
+                <select
+                  id="rol"
+                  name="rol"
+                  defaultValue="miembro"
+                  className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
+                >
+                  <option value="miembro">Miembro</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+              <Button type="submit">Generar enlace de invitación</Button>
+            </form>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Renueva la suscripción en Planes para poder invitar a más personas.
+            </p>
+          )}
 
           {invitaciones && invitaciones.length > 0 && (
             <div className="flex flex-col gap-2">

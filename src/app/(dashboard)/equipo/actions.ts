@@ -4,6 +4,12 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { crearEquipoSchema, invitarSchema } from "@/lib/validations/equipo";
+import {
+  actualizarPersonasExtra,
+  cancelarSuscripcion,
+  crearSuscripcionTrial,
+  procesarPagoExitoso,
+} from "@/lib/billing/subscriptions";
 
 async function usuarioActual() {
   const supabase = await createClient();
@@ -37,7 +43,10 @@ export async function crearEquipo(formData: FormData) {
 
   if (errorMiembro) throw new Error(errorMiembro.message);
 
+  await crearSuscripcionTrial(user.id, equipo.id);
+
   revalidatePath("/equipo");
+  revalidatePath("/planes");
 }
 
 export async function crearInvitacion(teamId: string, formData: FormData) {
@@ -46,6 +55,11 @@ export async function crearInvitacion(teamId: string, formData: FormData) {
     throw new Error(parsed.error.issues[0]?.message ?? "Datos inválidos");
   }
   const { supabase } = await usuarioActual();
+
+  const { data: activa } = await supabase.rpc("suscripcion_activa", { p_team_id: teamId });
+  if (!activa) {
+    throw new Error("El equipo no tiene una suscripción activa. Ve a Planes para renovarla.");
+  }
 
   const { error } = await supabase
     .from("invitations")
@@ -73,6 +87,30 @@ export async function quitarMiembro(teamId: string, userId: string) {
   if (error) throw new Error(error.message);
 
   revalidatePath("/equipo");
+}
+
+export async function marcarComoPagado(teamId: string) {
+  await usuarioActual();
+  await procesarPagoExitoso(teamId);
+  revalidatePath("/equipo");
+  revalidatePath("/planes");
+}
+
+export async function cancelarPlan(teamId: string) {
+  await usuarioActual();
+  await cancelarSuscripcion(teamId);
+  revalidatePath("/equipo");
+  revalidatePath("/planes");
+}
+
+export async function guardarPersonasExtra(teamId: string, formData: FormData) {
+  await usuarioActual();
+  const personasExtra = Number(formData.get("personasExtra") ?? 0);
+  if (!Number.isInteger(personasExtra) || personasExtra < 0) {
+    throw new Error("El número de personas extra no es válido.");
+  }
+  await actualizarPersonasExtra(teamId, personasExtra);
+  revalidatePath("/planes");
 }
 
 export async function salirDeEquipo(teamId: string) {

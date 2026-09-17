@@ -12,6 +12,7 @@ export type OrigenTurnoDB = "manual" | "texto" | "foto" | "calendar";
 export type ModoExtrasDB = "dia" | "semana" | "ambos";
 export type EstadoImportacionDB = "pendiente" | "listo" | "error" | "confirmado";
 export type RolEquipoDB = "admin" | "miembro";
+export type EstadoSuscripcionDB = "trial" | "activa" | "vencida" | "cancelada";
 
 export type Json = string | number | boolean | null | { [clave: string]: Json } | Json[];
 
@@ -100,6 +101,31 @@ export type InvitationRow = {
   created_at: string;
 };
 
+export type SubscriptionRow = {
+  id: string;
+  owner_id: string;
+  team_id: string;
+  plan: "admin";
+  estado: EstadoSuscripcionDB;
+  personas_incluidas: number;
+  personas_extra: number;
+  proveedor: string | null;
+  proveedor_sub_id: string | null;
+  periodo_fin: string | null;
+  trial_fin: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type BillingEventRow = {
+  id: string;
+  proveedor: string;
+  tipo: string;
+  payload_json: Json | null;
+  procesado_en: string | null;
+  created_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -145,6 +171,18 @@ export type Database = {
         Update: Partial<InvitationRow>;
         Relationships: [];
       };
+      subscriptions: {
+        Row: SubscriptionRow;
+        Insert: Partial<SubscriptionRow> & { owner_id: string; team_id: string };
+        Update: Partial<SubscriptionRow>;
+        Relationships: [];
+      };
+      billing_events: {
+        Row: BillingEventRow;
+        Insert: Partial<BillingEventRow> & { proveedor: string; tipo: string };
+        Update: Partial<BillingEventRow>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -155,6 +193,10 @@ export type Database = {
       aceptar_invitacion: {
         Args: { p_token: string };
         Returns: void;
+      };
+      suscripcion_activa: {
+        Args: { p_team_id: string };
+        Returns: boolean;
       };
     };
     Enums: Record<string, never>;

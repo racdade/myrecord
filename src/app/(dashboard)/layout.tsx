@@ -25,6 +25,7 @@ export default async function DashboardLayout({
             <Link href="/">Dashboard</Link>
             <Link href="/turnos">Turnos</Link>
             <Link href="/equipo">Equipo</Link>
+            <Link href="/planes">Planes</Link>
           </nav>
           <SignOutButton />
         </div>
