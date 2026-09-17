@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +36,9 @@ export default async function EquipoPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  const t = await getTranslations("equipo");
+  const tc = await getTranslations("comun");
+
   const { data: profile } = await supabase
     .from("profiles")
     .select("admin_habilitado")
@@ -53,27 +57,22 @@ export default async function EquipoPage() {
       <div className="flex flex-col gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Equipo</CardTitle>
+            <CardTitle>{t("titulo")}</CardTitle>
           </CardHeader>
           <CardContent>
             {profile?.admin_habilitado ? (
               <form action={crearEquipo} className="flex flex-col gap-4 sm:max-w-sm">
-                <p className="text-sm text-muted-foreground">
-                  Crea un equipo para invitar a otras personas y ver sus horas.
-                </p>
+                <p className="text-sm text-muted-foreground">{t("crearEquipoDescripcion")}</p>
                 <div className="grid gap-1.5">
-                  <Label htmlFor="nombre">Nombre del equipo</Label>
-                  <Input id="nombre" name="nombre" placeholder="Ej: Hotel X – Recepción" required />
+                  <Label htmlFor="nombre">{t("nombreDelEquipo")}</Label>
+                  <Input id="nombre" name="nombre" placeholder={t("placeholderNombreEquipo")} required />
                 </div>
                 <div>
-                  <Button type="submit">Crear equipo</Button>
+                  <Button type="submit">{t("crearEquipoBoton")}</Button>
                 </div>
               </form>
             ) : (
-              <p className="text-sm text-muted-foreground">
-                Todavía no perteneces a ningún equipo. Si tu empleador administra uno, pídele que te
-                comparta el enlace de invitación.
-              </p>
+              <p className="text-sm text-muted-foreground">{t("todaviaNoPerteneces")}</p>
             )}
           </CardContent>
         </Card>
@@ -97,13 +96,10 @@ export default async function EquipoPage() {
             <CardTitle>{equipo.nombre}</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <p className="text-sm text-muted-foreground">
-              Eres miembro de este equipo. El admin puede ver los turnos que registres marcados para
-              este equipo; tus turnos personales siguen siendo solo tuyos.
-            </p>
+            <p className="text-sm text-muted-foreground">{t("eresMiembro")}</p>
             <form action={salirDeEquipo.bind(null, equipo.id)}>
               <Button variant="destructive" type="submit">
-                Salir del equipo
+                {t("salirDelEquipo")}
               </Button>
             </form>
           </CardContent>
@@ -176,12 +172,9 @@ export default async function EquipoPage() {
       {!activa && (
         <Card className="border-destructive/50">
           <CardContent className="flex flex-wrap items-center justify-between gap-2 pt-4">
-            <p className="text-sm text-destructive">
-              La suscripción del equipo no está activa: solo lectura, no se pueden crear turnos de
-              equipo ni invitar hasta renovar.
-            </p>
+            <p className="text-sm text-destructive">{t("suscripcionInactivaAviso")}</p>
             <Link href="/planes" className={buttonVariants({ variant: "outline", size: "sm" })}>
-              Ir a Planes
+              {t("irAPlanes")}
             </Link>
           </CardContent>
         </Card>
@@ -189,26 +182,26 @@ export default async function EquipoPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>{equipo.nombre} — esta semana</CardTitle>
+          <CardTitle>{t("estaSemana", { equipo: equipo.nombre })}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Nombre</TableHead>
-                  <TableHead>Rol</TableHead>
-                  <TableHead>Horas</TableHead>
-                  <TableHead>Extras</TableHead>
-                  <TableHead>Pago estimado</TableHead>
-                  <TableHead className="text-right">Acciones</TableHead>
+                  <TableHead>{t("nombre")}</TableHead>
+                  <TableHead>{t("rol")}</TableHead>
+                  <TableHead>{t("horas")}</TableHead>
+                  <TableHead>{t("extras")}</TableHead>
+                  <TableHead>{t("pagoEstimado")}</TableHead>
+                  <TableHead className="text-right">{tc("acciones")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filasMiembros.map((fila) => (
                   <TableRow key={fila.userId}>
                     <TableCell>{fila.nombre}</TableCell>
-                    <TableCell>{fila.rol === "admin" ? "Admin" : "Miembro"}</TableCell>
+                    <TableCell>{fila.rol === "admin" ? tc("admin") : tc("miembro")}</TableCell>
                     <TableCell>{fila.horasSemana.toFixed(1)} h</TableCell>
                     <TableCell>{fila.extrasSemana.toFixed(1)} h</TableCell>
                     <TableCell>{fila.pagoEstimado}</TableCell>
@@ -217,12 +210,12 @@ export default async function EquipoPage() {
                         href={`/equipo/${fila.userId}`}
                         className={buttonVariants({ variant: "outline", size: "sm" })}
                       >
-                        Ver detalle
+                        {tc("verDetalle")}
                       </Link>
                       {fila.userId !== equipo.owner_id && (
                         <form action={quitarMiembro.bind(null, equipo.id, fila.userId)}>
                           <Button variant="destructive" size="sm" type="submit">
-                            Quitar
+                            {tc("quitar")}
                           </Button>
                         </form>
                       )}
@@ -237,38 +230,37 @@ export default async function EquipoPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Invitar a alguien</CardTitle>
+          <CardTitle>{t("invitarAAlguien")}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           {activa ? (
             <form action={crearInvitacion.bind(null, equipo.id)} className="flex flex-wrap items-end gap-2">
               <div className="grid gap-1.5">
-                <Label htmlFor="rol">Rol</Label>
+                <Label htmlFor="rol">{t("rol")}</Label>
                 <select
                   id="rol"
                   name="rol"
                   defaultValue="miembro"
                   className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
                 >
-                  <option value="miembro">Miembro</option>
-                  <option value="admin">Admin</option>
+                  <option value="miembro">{tc("miembro")}</option>
+                  <option value="admin">{tc("admin")}</option>
                 </select>
               </div>
-              <Button type="submit">Generar enlace de invitación</Button>
+              <Button type="submit">{t("generarEnlace")}</Button>
             </form>
           ) : (
-            <p className="text-sm text-muted-foreground">
-              Renueva la suscripción en Planes para poder invitar a más personas.
-            </p>
+            <p className="text-sm text-muted-foreground">{t("renuevaLaSuscripcion")}</p>
           )}
 
           {invitaciones && invitaciones.length > 0 && (
             <div className="flex flex-col gap-2">
-              <p className="text-sm font-medium">Invitaciones pendientes</p>
+              <p className="text-sm font-medium">{t("invitacionesPendientes")}</p>
               {invitaciones.map((inv) => (
                 <div key={inv.id} className="flex flex-wrap items-center gap-2 text-sm">
                   <span className="text-muted-foreground">
-                    {inv.rol === "admin" ? "Admin" : "Miembro"} · vence {inv.expira_en.slice(0, 10)}
+                    {inv.rol === "admin" ? tc("admin") : tc("miembro")} ·{" "}
+                    {t("vence", { fecha: inv.expira_en.slice(0, 10) })}
                   </span>
                   <CopyLinkButton enlace={`${origen}/invitacion/${inv.token}`} />
                 </div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,16 +31,18 @@ interface TurnoFormProps {
 
 export function TurnoForm({ action, valoresIniciales, textoBoton, cancelarHref, equipo }: TurnoFormProps) {
   const [tipo, setTipo] = useState<TipoTurnoDB>(valoresIniciales?.tipo ?? "normal");
+  const tc = useTranslations("comun");
+  const t = useTranslations("turnos");
 
   return (
     <form action={action} className="grid gap-4 sm:grid-cols-2">
       <div className="grid gap-1.5">
-        <Label htmlFor="fecha">Fecha</Label>
+        <Label htmlFor="fecha">{tc("fecha")}</Label>
         <Input id="fecha" name="fecha" type="date" defaultValue={valoresIniciales?.fecha} required />
       </div>
 
       <div className="grid gap-1.5">
-        <Label htmlFor="tipo">Tipo</Label>
+        <Label htmlFor="tipo">{tc("tipo")}</Label>
         <select
           id="tipo"
           name="tipo"
@@ -47,16 +50,16 @@ export function TurnoForm({ action, valoresIniciales, textoBoton, cancelarHref, 
           onChange={(e) => setTipo(e.target.value as TipoTurnoDB)}
           className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
         >
-          <option value="normal">Normal</option>
-          <option value="feriado">Feriado</option>
-          <option value="libre">Libre</option>
+          <option value="normal">{tc("normal")}</option>
+          <option value="feriado">{tc("feriado")}</option>
+          <option value="libre">{tc("libre")}</option>
         </select>
       </div>
 
       {tipo !== "libre" && (
         <>
           <div className="grid gap-1.5">
-            <Label htmlFor="horaInicio">Hora de entrada</Label>
+            <Label htmlFor="horaInicio">{t("horaEntrada")}</Label>
             <Input
               id="horaInicio"
               name="horaInicio"
@@ -66,11 +69,11 @@ export function TurnoForm({ action, valoresIniciales, textoBoton, cancelarHref, 
             />
           </div>
           <div className="grid gap-1.5">
-            <Label htmlFor="horaFin">Hora de salida</Label>
+            <Label htmlFor="horaFin">{t("horaSalida")}</Label>
             <Input id="horaFin" name="horaFin" type="time" defaultValue={valoresIniciales?.horaFin} required />
           </div>
           <div className="grid gap-1.5">
-            <Label htmlFor="descansoMin">Descanso (min)</Label>
+            <Label htmlFor="descansoMin">{t("descansoMin")}</Label>
             <Input
               id="descansoMin"
               name="descansoMin"
@@ -83,20 +86,20 @@ export function TurnoForm({ action, valoresIniciales, textoBoton, cancelarHref, 
       )}
 
       <div className="grid gap-1.5 sm:col-span-2">
-        <Label htmlFor="nota">Nota (opcional)</Label>
+        <Label htmlFor="nota">{t("notaOpcional")}</Label>
         <Textarea id="nota" name="nota" defaultValue={valoresIniciales?.nota} />
       </div>
 
       {equipo && (
         <div className="grid gap-1.5">
-          <Label htmlFor="teamId">Para</Label>
+          <Label htmlFor="teamId">{t("para")}</Label>
           <select
             id="teamId"
             name="teamId"
             defaultValue={valoresIniciales?.teamId ?? ""}
             className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
           >
-            <option value="">Personal</option>
+            <option value="">{tc("personal")}</option>
             <option value={equipo.id}>{equipo.nombre}</option>
           </select>
         </div>
@@ -106,7 +109,7 @@ export function TurnoForm({ action, valoresIniciales, textoBoton, cancelarHref, 
         <Button type="submit">{textoBoton}</Button>
         {cancelarHref && (
           <Link href={cancelarHref} className={buttonVariants({ variant: "outline" })}>
-            Cancelar
+            {tc("cancelar")}
           </Link>
         )}
       </div>

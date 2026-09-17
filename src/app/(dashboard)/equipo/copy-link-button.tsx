@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 
 export function CopyLinkButton({ enlace }: { enlace: string }) {
+  const t = useTranslations("comun");
   const [copiado, setCopiado] = useState(false);
 
   async function copiar() {
@@ -18,7 +20,7 @@ export function CopyLinkButton({ enlace }: { enlace: string }) {
 
   return (
     <Button type="button" variant="outline" size="sm" onClick={copiar}>
-      {copiado ? "¡Copiado!" : "Copiar enlace"}
+      {copiado ? t("copiado") : t("copiarEnlace")}
     </Button>
   );
 }

@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { sincronizarSemana } from "./sync-actions";
 
 export function SincronizarButton() {
+  const t = useTranslations("turnos");
   const [mensaje, setMensaje] = useState<string | null>(null);
   const [esError, setEsError] = useState(false);
   const [pendiente, iniciar] = useTransition();
@@ -15,10 +17,10 @@ export function SincronizarButton() {
       try {
         const resultado = await sincronizarSemana();
         setEsError(false);
-        setMensaje(`Listo: se sincronizaron ${resultado.sincronizados} turno(s) de esta semana.`);
+        setMensaje(t("sincronizadoOk", { cantidad: resultado.sincronizados }));
       } catch (err) {
         setEsError(true);
-        setMensaje(err instanceof Error ? err.message : "No se pudo sincronizar.");
+        setMensaje(err instanceof Error ? err.message : t("noSePudoSincronizar"));
       }
     });
   }
@@ -26,7 +28,7 @@ export function SincronizarButton() {
   return (
     <div className="flex flex-col gap-2">
       <Button type="button" variant="outline" onClick={sincronizar} disabled={pendiente}>
-        {pendiente ? "Sincronizando…" : "Sincronizar semana con Google Calendar"}
+        {pendiente ? t("sincronizando") : t("sincronizarSemana")}
       </Button>
       {mensaje && (
         <p className={`text-sm ${esError ? "text-destructive" : "text-muted-foreground"}`}>{mensaje}</p>

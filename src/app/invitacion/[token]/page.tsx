@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
@@ -14,33 +15,37 @@ export default async function InvitacionPage({ params }: { params: Promise<{ tok
   const { data } = await supabase.rpc("obtener_invitacion", { p_token: token });
   const info = data?.[0];
 
+  const t = await getTranslations("invitacion");
+  const tc = await getTranslations("comun");
+
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 p-6">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle>Invitación a un equipo</CardTitle>
+          <CardTitle>{t("titulo")}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           {!info || !info.valida ? (
-            <p className="text-sm text-muted-foreground">
-              Esta invitación no es válida o ya venció. Pide un enlace nuevo.
-            </p>
+            <p className="text-sm text-muted-foreground">{t("noEsValida")}</p>
           ) : (
             <>
               <p className="text-sm">
-                Te invitaron a unirte a <strong>{info.equipo_nombre}</strong> como{" "}
-                {info.rol === "admin" ? "admin" : "miembro"}.
+                {t.rich("teInvitaronA", {
+                  equipo: info.equipo_nombre ?? "",
+                  rol: info.rol === "admin" ? tc("admin") : tc("miembro"),
+                  strong: (chunks) => <strong>{chunks}</strong>,
+                })}
               </p>
               {user ? (
                 <form action={aceptarInvitacion.bind(null, token)}>
-                  <Button type="submit">Unirme al equipo</Button>
+                  <Button type="submit">{t("unirme")}</Button>
                 </form>
               ) : (
                 <Link
                   href={`/login?next=${encodeURIComponent(`/invitacion/${token}`)}`}
                   className={buttonVariants({ variant: "default" })}
                 >
-                  Inicia sesión para unirte
+                  {t("iniciaSesion")}
                 </Link>
               )}
             </>

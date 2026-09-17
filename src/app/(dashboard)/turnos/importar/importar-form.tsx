@@ -3,7 +3,8 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { format, parseISO } from "date-fns";
-import { es } from "date-fns/locale";
+import { enUS, es } from "date-fns/locale";
+import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -38,11 +39,7 @@ interface Revision {
 const CLASE_SELECT =
   "h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30";
 
-function nombreDia(fechaISO: string): string {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(fechaISO)) return "—";
-  const nombre = format(parseISO(fechaISO), "EEEE", { locale: es });
-  return nombre.charAt(0).toUpperCase() + nombre.slice(1);
-}
+const LOCALES_DATE_FNS = { es, en: enUS };
 
 interface ImportarHorarioFormProps {
   semanaInicioPorDefecto: string;
@@ -51,12 +48,21 @@ interface ImportarHorarioFormProps {
 
 export function ImportarHorarioForm({ semanaInicioPorDefecto, equipo }: ImportarHorarioFormProps) {
   const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations("turnosImportar");
+  const tc = useTranslations("comun");
   const [modo, setModo] = useState<"foto" | "texto">("foto");
   const [semanaInicio, setSemanaInicio] = useState(semanaInicioPorDefecto);
   const [error, setError] = useState<string | null>(null);
   const [revision, setRevision] = useState<Revision | null>(null);
   const [pendienteInterpretar, iniciarInterpretar] = useTransition();
   const [pendienteGuardar, iniciarGuardar] = useTransition();
+
+  function nombreDia(fechaISO: string): string {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(fechaISO)) return "—";
+    const nombre = format(parseISO(fechaISO), "EEEE", { locale: LOCALES_DATE_FNS[locale as "es" | "en"] ?? es });
+    return nombre.charAt(0).toUpperCase() + nombre.slice(1);
+  }
 
   function manejarSubmit(evento: React.FormEvent<HTMLFormElement>) {
     evento.preventDefault();
@@ -106,7 +112,7 @@ export function ImportarHorarioForm({ semanaInicioPorDefecto, equipo }: Importar
         await guardarTurnosImportados(revision.scheduleImportId, revision.origen, revision.teamId, revision.filas);
         router.push("/turnos");
       } catch (err) {
-        setError(err instanceof Error ? err.message : "No se pudo guardar.");
+        setError(err instanceof Error ? err.message : t("noSePudoGuardar"));
       }
     });
   }
@@ -114,21 +120,19 @@ export function ImportarHorarioForm({ semanaInicioPorDefecto, equipo }: Importar
   if (revision) {
     return (
       <div className="flex flex-col gap-4">
-        <p className="text-sm text-muted-foreground">
-          Revisa y corrige los turnos antes de guardar. Todavía no se guardó nada.
-        </p>
+        <p className="text-sm text-muted-foreground">{t("revisaYCorrige")}</p>
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Fecha</TableHead>
-                <TableHead>Día</TableHead>
-                <TableHead>Tipo</TableHead>
-                <TableHead>Entrada</TableHead>
-                <TableHead>Salida</TableHead>
-                <TableHead>Descanso</TableHead>
-                <TableHead>Nota</TableHead>
-                <TableHead className="text-right">Quitar</TableHead>
+                <TableHead>{tc("fecha")}</TableHead>
+                <TableHead>{t("dia")}</TableHead>
+                <TableHead>{tc("tipo")}</TableHead>
+                <TableHead>{t("entrada")}</TableHead>
+                <TableHead>{t("salida")}</TableHead>
+                <TableHead>{tc("descanso")}</TableHead>
+                <TableHead>{tc("nota")}</TableHead>
+                <TableHead className="text-right">{tc("quitar")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -148,9 +152,9 @@ export function ImportarHorarioForm({ semanaInicioPorDefecto, equipo }: Importar
                       onChange={(e) => actualizarFila(indice, { tipo: e.target.value as TipoTurnoDB })}
                       className={CLASE_SELECT}
                     >
-                      <option value="normal">Normal</option>
-                      <option value="feriado">Feriado</option>
-                      <option value="libre">Libre</option>
+                      <option value="normal">{tc("normal")}</option>
+                      <option value="feriado">{tc("feriado")}</option>
+                      <option value="libre">{tc("libre")}</option>
                     </select>
                   </TableCell>
                   <TableCell>
@@ -183,7 +187,7 @@ export function ImportarHorarioForm({ semanaInicioPorDefecto, equipo }: Importar
                   </TableCell>
                   <TableCell className="text-right">
                     <Button type="button" variant="outline" size="sm" onClick={() => quitarFila(indice)}>
-                      Quitar
+                      {tc("quitar")}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -196,10 +200,10 @@ export function ImportarHorarioForm({ semanaInicioPorDefecto, equipo }: Importar
 
         <div className="flex gap-2">
           <Button onClick={confirmar} disabled={pendienteGuardar || revision.filas.length === 0}>
-            {pendienteGuardar ? "Guardando…" : `Guardar ${revision.filas.length} turno(s)`}
+            {pendienteGuardar ? t("guardando") : t("guardarNTurnos", { cantidad: revision.filas.length })}
           </Button>
           <Button type="button" variant="outline" onClick={() => setRevision(null)} disabled={pendienteGuardar}>
-            Cancelar
+            {tc("cancelar")}
           </Button>
         </div>
       </div>
@@ -209,7 +213,7 @@ export function ImportarHorarioForm({ semanaInicioPorDefecto, equipo }: Importar
   return (
     <form onSubmit={manejarSubmit} className="flex flex-col gap-4">
       <div className="grid gap-1.5 sm:max-w-xs">
-        <Label htmlFor="semanaInicio">Semana del horario (lunes)</Label>
+        <Label htmlFor="semanaInicio">{t("semanaDelHorario")}</Label>
         <Input
           id="semanaInicio"
           name="semanaInicio"
@@ -222,35 +226,30 @@ export function ImportarHorarioForm({ semanaInicioPorDefecto, equipo }: Importar
 
       <div className="flex gap-2">
         <Button type="button" variant={modo === "foto" ? "default" : "outline"} onClick={() => setModo("foto")}>
-          Foto
+          {t("foto")}
         </Button>
         <Button type="button" variant={modo === "texto" ? "default" : "outline"} onClick={() => setModo("texto")}>
-          Texto
+          {t("texto")}
         </Button>
       </div>
 
       {modo === "foto" ? (
         <div className="grid gap-1.5">
-          <Label htmlFor="foto">Foto del horario</Label>
+          <Label htmlFor="foto">{t("fotoDelHorario")}</Label>
           <Input id="foto" name="foto" type="file" accept="image/jpeg,image/png,image/webp" required />
         </div>
       ) : (
         <div className="grid gap-1.5">
-          <Label htmlFor="texto">Describe el horario</Label>
-          <Textarea
-            id="texto"
-            name="texto"
-            placeholder='Ej: "lun y mar 12pm a 10pm, miérc 2 a 10pm, viernes libre"'
-            required
-          />
+          <Label htmlFor="texto">{t("describeElHorario")}</Label>
+          <Textarea id="texto" name="texto" placeholder={t("placeholderTexto")} required />
         </div>
       )}
 
       {equipo && (
         <div className="grid gap-1.5 sm:max-w-xs">
-          <Label htmlFor="teamId">Para</Label>
+          <Label htmlFor="teamId">{t("para")}</Label>
           <select id="teamId" name="teamId" defaultValue="" className={CLASE_SELECT}>
-            <option value="">Personal</option>
+            <option value="">{tc("personal")}</option>
             <option value={equipo.id}>{equipo.nombre}</option>
           </select>
         </div>
@@ -260,17 +259,20 @@ export function ImportarHorarioForm({ semanaInicioPorDefecto, equipo }: Importar
 
       <div>
         <Button type="submit" disabled={pendienteInterpretar}>
-          {pendienteInterpretar ? "Leyendo horario…" : "Leer horario"}
+          {pendienteInterpretar ? t("leyendoHorario") : t("leerHorario")}
         </Button>
       </div>
 
       <div className="grid gap-1.5 sm:max-w-sm">
-        <Label htmlFor="nombrePersona">Leer solo el horario de (opcional)</Label>
-        <Input id="nombrePersona" name="nombrePersona" type="text" placeholder="Ej: Adolfo" maxLength={100} />
-        <p className="text-xs text-muted-foreground">
-          Si la foto o el texto tiene el horario de varias personas, escribe el nombre para que se
-          lean solo sus turnos.
-        </p>
+        <Label htmlFor="nombrePersona">{t("leerSoloElHorarioDe")}</Label>
+        <Input
+          id="nombrePersona"
+          name="nombrePersona"
+          type="text"
+          placeholder={t("placeholderNombrePersona")}
+          maxLength={100}
+        />
+        <p className="text-xs text-muted-foreground">{t("siLaFotoTieneVariasPersonas")}</p>
       </div>
     </form>
   );

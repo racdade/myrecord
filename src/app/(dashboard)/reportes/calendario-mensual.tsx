@@ -1,19 +1,22 @@
 import { eachDayOfInterval, endOfMonth, format, getDay, startOfMonth } from "date-fns";
-import { es } from "date-fns/locale";
+import { enUS, es } from "date-fns/locale";
 import { minutosAHoras, minutosNetosTurno } from "@/lib/calc";
 import { filaATurno } from "@/lib/shift-mapper";
 import { fechaISO } from "@/lib/semana";
 import type { ShiftRow } from "@/types/database";
 
+const LOCALES_DATE_FNS = { es, en: enUS };
+
 interface CalendarioMensualProps {
   mesRef: Date;
   turnos: ShiftRow[];
   feriados: { fecha: string; nombre: string }[];
+  locale: string;
+  diasSemana: string[];
 }
 
-const DIAS_SEMANA = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
-
-export function CalendarioMensual({ mesRef, turnos, feriados }: CalendarioMensualProps) {
+export function CalendarioMensual({ mesRef, turnos, feriados, locale, diasSemana }: CalendarioMensualProps) {
+  const dateFnsLocale = LOCALES_DATE_FNS[locale as "es" | "en"] ?? es;
   const inicio = startOfMonth(mesRef);
   const fin = endOfMonth(mesRef);
   const dias = eachDayOfInterval({ start: inicio, end: fin });
@@ -24,9 +27,9 @@ export function CalendarioMensual({ mesRef, turnos, feriados }: CalendarioMensua
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-sm font-medium capitalize">{format(mesRef, "MMMM yyyy", { locale: es })}</p>
+      <p className="text-sm font-medium capitalize">{format(mesRef, "MMMM yyyy", { locale: dateFnsLocale })}</p>
       <div className="grid grid-cols-7 gap-1 text-xs">
-        {DIAS_SEMANA.map((dia) => (
+        {diasSemana.map((dia) => (
           <div key={dia} className="text-center font-medium text-muted-foreground">
             {dia}
           </div>

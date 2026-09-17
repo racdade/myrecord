@@ -1,7 +1,8 @@
 import { format, parseISO } from "date-fns";
-import { es } from "date-fns/locale";
+import { enUS, es } from "date-fns/locale";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,11 +23,7 @@ import { formatearRangoHora } from "@/lib/formato-hora";
 import { TendenciaChart } from "./tendencia-chart";
 import { CalendarioMensual } from "./calendario-mensual";
 
-const ETIQUETAS_TIPO: Record<string, string> = {
-  normal: "Normal",
-  feriado: "Feriado",
-  libre: "Libre",
-};
+const LOCALES_DATE_FNS = { es, en: enUS };
 
 interface ReportesSearchParams {
   modo?: string;
@@ -65,78 +62,88 @@ export default async function ReportesPage({
   const { data: profile } = await supabase.from("profiles").select("formato_hora").eq("id", user.id).single();
   const formatoHora = profile?.formato_hora ?? "24h";
 
+  const locale = await getLocale();
+  const dateFnsLocale = LOCALES_DATE_FNS[locale as "es" | "en"] ?? es;
+
   const datosTendencia = reporte.tendencia.map((p) => ({
-    etiqueta: format(parseISO(p.semanaInicio), "d MMM", { locale: es }),
+    etiqueta: format(parseISO(p.semanaInicio), "d MMM", { locale: dateFnsLocale }),
     horas: p.horas,
     extras: p.extras,
   }));
 
   const queryExport = new URLSearchParams({ modo, ...(modo === "rango" ? { desde: rango.inicio, hasta: rango.fin } : {}) });
 
+  const t = await getTranslations("reportes");
+  const tc = await getTranslations("comun");
+
+  const ETIQUETAS_TIPO: Record<string, string> = {
+    normal: tc("normal"),
+    feriado: tc("feriado"),
+    libre: tc("libre"),
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <Card>
         <CardHeader>
-          <CardTitle>Filtro</CardTitle>
+          <CardTitle>{t("filtro")}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-wrap gap-2">
             <Link href="/reportes?modo=semana" className={buttonVariants({ variant: modo === "semana" ? "default" : "outline", size: "sm" })}>
-              Semana actual
+              {t("semanaActual")}
             </Link>
             <Link href="/reportes?modo=mes" className={buttonVariants({ variant: modo === "mes" ? "default" : "outline", size: "sm" })}>
-              Mes actual
+              {t("mesActual")}
             </Link>
           </div>
           <form method="get" className="flex flex-wrap items-end gap-2">
             <input type="hidden" name="modo" value="rango" />
             <div className="grid gap-1.5">
-              <Label htmlFor="desde">Desde</Label>
+              <Label htmlFor="desde">{t("desde")}</Label>
               <Input id="desde" name="desde" type="date" defaultValue={modo === "rango" ? rango.inicio : undefined} required />
             </div>
             <div className="grid gap-1.5">
-              <Label htmlFor="hasta">Hasta</Label>
+              <Label htmlFor="hasta">{t("hasta")}</Label>
               <Input id="hasta" name="hasta" type="date" defaultValue={modo === "rango" ? rango.fin : undefined} required />
             </div>
             <Button type="submit" variant={modo === "rango" ? "default" : "outline"}>
-              Aplicar rango
+              {t("aplicarRango")}
             </Button>
           </form>
         </CardContent>
       </Card>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-        <TarjetaResumen titulo="Horas" valor={`${reporte.horas.toFixed(1)} h`} />
-        <TarjetaResumen titulo="Extras" valor={`${reporte.extras.toFixed(1)} h`} />
-        <TarjetaResumen titulo="Pago estimado" valor={reporte.formatoMoneda.format(reporte.pagoEstimado)} />
+        <TarjetaResumen titulo={t("horas")} valor={`${reporte.horas.toFixed(1)} h`} />
+        <TarjetaResumen titulo={t("extras")} valor={`${reporte.extras.toFixed(1)} h`} />
+        <TarjetaResumen titulo={t("pagoEstimado")} valor={reporte.formatoMoneda.format(reporte.pagoEstimado)} />
       </div>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>
-            Turnos del {rango.inicio} al {rango.fin}
-          </CardTitle>
+          <CardTitle>{t("turnosDelAl", { desde: rango.inicio, hasta: rango.fin })}</CardTitle>
           <div className="flex gap-2">
             <a href={`/api/reportes/csv?${queryExport.toString()}`} className={buttonVariants({ variant: "outline", size: "sm" })}>
-              Exportar CSV
+              {t("exportarCSV")}
             </a>
             <a href={`/api/reportes/pdf?${queryExport.toString()}`} className={buttonVariants({ variant: "outline", size: "sm" })}>
-              Exportar PDF
+              {t("exportarPDF")}
             </a>
           </div>
         </CardHeader>
         <CardContent>
           {reporte.turnos.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No hay turnos en este rango.</p>
+            <p className="text-sm text-muted-foreground">{t("noHayTurnos")}</p>
           ) : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Fecha</TableHead>
-                    <TableHead>Tipo</TableHead>
-                    <TableHead>Horario</TableHead>
-                    <TableHead>Nota</TableHead>
+                    <TableHead>{tc("fecha")}</TableHead>
+                    <TableHead>{tc("tipo")}</TableHead>
+                    <TableHead>{tc("horario")}</TableHead>
+                    <TableHead>{tc("nota")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -157,7 +164,7 @@ export default async function ReportesPage({
 
       <Card>
         <CardHeader>
-          <CardTitle>Tendencia — últimas 12 semanas</CardTitle>
+          <CardTitle>{t("tendencia")}</CardTitle>
         </CardHeader>
         <CardContent>
           <TendenciaChart datos={datosTendencia} />
@@ -166,10 +173,16 @@ export default async function ReportesPage({
 
       <Card>
         <CardHeader>
-          <CardTitle>Calendario del mes</CardTitle>
+          <CardTitle>{t("calendarioDelMes")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <CalendarioMensual mesRef={new Date()} turnos={turnosMes ?? []} feriados={feriadosMes ?? []} />
+          <CalendarioMensual
+            mesRef={new Date()}
+            turnos={turnosMes ?? []}
+            feriados={feriadosMes ?? []}
+            locale={locale}
+            diasSemana={t.raw("diasSemana")}
+          />
         </CardContent>
       </Card>
     </div>

@@ -1,7 +1,8 @@
 import { format, parseISO } from "date-fns";
-import { es } from "date-fns/locale";
+import { enUS, es } from "date-fns/locale";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -20,11 +21,7 @@ import { formatearRangoHora } from "@/lib/formato-hora";
 import { TendenciaChart } from "../../reportes/tendencia-chart";
 import { CalendarioMensual } from "../../reportes/calendario-mensual";
 
-const ETIQUETAS_TIPO: Record<string, string> = {
-  normal: "Normal",
-  feriado: "Feriado",
-  libre: "Libre",
-};
+const LOCALES_DATE_FNS = { es, en: enUS };
 
 interface DetalleSearchParams {
   modo?: string;
@@ -72,8 +69,11 @@ export default async function DetalleMiembroPage({
     .gte("fecha", mesActual.inicio)
     .lte("fecha", mesActual.fin);
 
+  const locale = await getLocale();
+  const dateFnsLocale = LOCALES_DATE_FNS[locale as "es" | "en"] ?? es;
+
   const datosTendencia = reporte.tendencia.map((p) => ({
-    etiqueta: format(parseISO(p.semanaInicio), "d MMM", { locale: es }),
+    etiqueta: format(parseISO(p.semanaInicio), "d MMM", { locale: dateFnsLocale }),
     horas: p.horas,
     extras: p.extras,
   }));
@@ -84,12 +84,22 @@ export default async function DetalleMiembroPage({
     ...(modo === "rango" ? { desde: rango.inicio, hasta: rango.fin } : {}),
   });
 
+  const t = await getTranslations("equipo");
+  const tr = await getTranslations("reportes");
+  const tc = await getTranslations("comun");
+
+  const ETIQUETAS_TIPO: Record<string, string> = {
+    normal: tc("normal"),
+    feriado: tc("feriado"),
+    libre: tc("libre"),
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h1 className="text-lg font-semibold">{reporte.nombre}</h1>
         <Link href="/equipo" className={buttonVariants({ variant: "outline", size: "sm" })}>
-          Volver al equipo
+          {t("volverAlEquipo")}
         </Link>
       </div>
 
@@ -98,54 +108,52 @@ export default async function DetalleMiembroPage({
           href={`/equipo/${userId}?modo=semana`}
           className={buttonVariants({ variant: modo === "semana" ? "default" : "outline", size: "sm" })}
         >
-          Semana actual
+          {tr("semanaActual")}
         </Link>
         <Link
           href={`/equipo/${userId}?modo=mes`}
           className={buttonVariants({ variant: modo === "mes" ? "default" : "outline", size: "sm" })}
         >
-          Mes actual
+          {tr("mesActual")}
         </Link>
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-        <TarjetaResumen titulo="Horas" valor={`${reporte.horas.toFixed(1)} h`} />
-        <TarjetaResumen titulo="Extras" valor={`${reporte.extras.toFixed(1)} h`} />
-        <TarjetaResumen titulo="Pago estimado" valor={reporte.formatoMoneda.format(reporte.pagoEstimado)} />
+        <TarjetaResumen titulo={tr("horas")} valor={`${reporte.horas.toFixed(1)} h`} />
+        <TarjetaResumen titulo={tr("extras")} valor={`${reporte.extras.toFixed(1)} h`} />
+        <TarjetaResumen titulo={tr("pagoEstimado")} valor={reporte.formatoMoneda.format(reporte.pagoEstimado)} />
       </div>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>
-            Turnos del {rango.inicio} al {rango.fin}
-          </CardTitle>
+          <CardTitle>{tr("turnosDelAl", { desde: rango.inicio, hasta: rango.fin })}</CardTitle>
           <div className="flex gap-2">
             <a
               href={`/api/reportes/csv?${queryExport.toString()}`}
               className={buttonVariants({ variant: "outline", size: "sm" })}
             >
-              Exportar CSV
+              {tr("exportarCSV")}
             </a>
             <a
               href={`/api/reportes/pdf?${queryExport.toString()}`}
               className={buttonVariants({ variant: "outline", size: "sm" })}
             >
-              Exportar PDF
+              {tr("exportarPDF")}
             </a>
           </div>
         </CardHeader>
         <CardContent>
           {reporte.turnos.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No hay turnos en este rango.</p>
+            <p className="text-sm text-muted-foreground">{tr("noHayTurnos")}</p>
           ) : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Fecha</TableHead>
-                    <TableHead>Tipo</TableHead>
-                    <TableHead>Horario</TableHead>
-                    <TableHead>Nota</TableHead>
+                    <TableHead>{tc("fecha")}</TableHead>
+                    <TableHead>{tc("tipo")}</TableHead>
+                    <TableHead>{tc("horario")}</TableHead>
+                    <TableHead>{tc("nota")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -168,7 +176,7 @@ export default async function DetalleMiembroPage({
 
       <Card>
         <CardHeader>
-          <CardTitle>Tendencia — últimas 12 semanas</CardTitle>
+          <CardTitle>{tr("tendencia")}</CardTitle>
         </CardHeader>
         <CardContent>
           <TendenciaChart datos={datosTendencia} />
@@ -177,10 +185,16 @@ export default async function DetalleMiembroPage({
 
       <Card>
         <CardHeader>
-          <CardTitle>Calendario del mes</CardTitle>
+          <CardTitle>{tr("calendarioDelMes")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <CalendarioMensual mesRef={new Date()} turnos={turnosMes ?? []} feriados={feriadosMes ?? []} />
+          <CalendarioMensual
+            mesRef={new Date()}
+            turnos={turnosMes ?? []}
+            feriados={feriadosMes ?? []}
+            locale={locale}
+            diasSemana={tr.raw("diasSemana")}
+          />
         </CardContent>
       </Card>
     </div>

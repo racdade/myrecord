@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { rangoSemanaActual } from "@/lib/semana";
@@ -21,11 +22,13 @@ export default async function ImportarHorarioPage() {
     equipo = equipoRow ?? null;
   }
 
+  const t = await getTranslations("turnosImportar");
+
   return (
     <div className="flex flex-col gap-6">
       <Card>
         <CardHeader>
-          <CardTitle>Agregar horario con foto o texto</CardTitle>
+          <CardTitle>{t("titulo")}</CardTitle>
         </CardHeader>
         <CardContent>
           <ImportarHorarioForm semanaInicioPorDefecto={inicio} equipo={equipo} />

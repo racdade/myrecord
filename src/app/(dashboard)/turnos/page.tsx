@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -17,12 +18,6 @@ import { formatearRangoHora } from "@/lib/formato-hora";
 import { actualizarTurno, borrarTurno, crearTurno } from "./actions";
 import { TurnoForm } from "./turno-form";
 import { SincronizarButton } from "./sincronizar-button";
-
-const ETIQUETAS_TIPO: Record<string, string> = {
-  normal: "Normal",
-  feriado: "Feriado",
-  libre: "Libre",
-};
 
 export default async function TurnosPage({
   searchParams,
@@ -58,14 +53,23 @@ export default async function TurnosPage({
 
   const turnoEnEdicion = editar ? turnos?.find((t) => t.id === editar) : undefined;
 
+  const t = await getTranslations("turnos");
+  const tc = await getTranslations("comun");
+
+  const ETIQUETAS_TIPO: Record<string, string> = {
+    normal: tc("normal"),
+    feriado: tc("feriado"),
+    libre: tc("libre"),
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>{turnoEnEdicion ? "Editar turno" : "Agregar turno"}</CardTitle>
+          <CardTitle>{turnoEnEdicion ? t("editarTurno") : t("agregarTurno")}</CardTitle>
           {!turnoEnEdicion && (
             <Link href="/turnos/importar" className={buttonVariants({ variant: "default", size: "sm" })}>
-              Importar con foto o texto
+              {t("importarConFotoOTexto")}
             </Link>
           )}
         </CardHeader>
@@ -74,7 +78,7 @@ export default async function TurnosPage({
             <TurnoForm
               key={turnoEnEdicion.id}
               action={actualizarTurno.bind(null, turnoEnEdicion.id)}
-              textoBoton="Guardar cambios"
+              textoBoton={t("guardarCambios")}
               cancelarHref="/turnos"
               equipo={equipo}
               valoresIniciales={{
@@ -88,31 +92,31 @@ export default async function TurnosPage({
               }}
             />
           ) : (
-            <TurnoForm action={crearTurno} textoBoton="Agregar turno" equipo={equipo} />
+            <TurnoForm action={crearTurno} textoBoton={t("agregarTurno")} equipo={equipo} />
           )}
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Tus turnos</CardTitle>
+          <CardTitle>{t("tusTurnos")}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <SincronizarButton />
           {!turnos || turnos.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Todavía no registras turnos.</p>
+            <p className="text-sm text-muted-foreground">{t("todaviaNoRegistras")}</p>
           ) : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Fecha</TableHead>
-                    <TableHead>Tipo</TableHead>
-                    <TableHead>Horario</TableHead>
-                    <TableHead>Descanso</TableHead>
-                    <TableHead>Horas netas</TableHead>
-                    <TableHead>Nota</TableHead>
-                    <TableHead className="text-right">Acciones</TableHead>
+                    <TableHead>{tc("fecha")}</TableHead>
+                    <TableHead>{tc("tipo")}</TableHead>
+                    <TableHead>{tc("horario")}</TableHead>
+                    <TableHead>{tc("descanso")}</TableHead>
+                    <TableHead>{t("horasNetas")}</TableHead>
+                    <TableHead>{tc("nota")}</TableHead>
+                    <TableHead className="text-right">{tc("acciones")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -131,11 +135,11 @@ export default async function TurnosPage({
                             href={`/turnos?editar=${turno.id}`}
                             className={buttonVariants({ variant: "outline", size: "sm" })}
                           >
-                            Editar
+                            {tc("editar")}
                           </Link>
                           <form action={borrarTurno.bind(null, turno.id)}>
                             <Button variant="destructive" size="sm" type="submit">
-                              Borrar
+                              {tc("borrar")}
                             </Button>
                           </form>
                         </TableCell>
