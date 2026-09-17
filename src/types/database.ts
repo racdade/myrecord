@@ -117,6 +117,13 @@ export type SubscriptionRow = {
   updated_at: string;
 };
 
+export type GoogleConnectionRow = {
+  user_id: string;
+  refresh_token: string;
+  calendar_id: string | null;
+  conectado_en: string;
+};
+
 export type BillingEventRow = {
   id: string;
   proveedor: string;
@@ -181,6 +188,12 @@ export type Database = {
         Row: BillingEventRow;
         Insert: Partial<BillingEventRow> & { proveedor: string; tipo: string };
         Update: Partial<BillingEventRow>;
+        Relationships: [];
+      };
+      google_connections: {
+        Row: GoogleConnectionRow;
+        Insert: Partial<GoogleConnectionRow> & { user_id: string; refresh_token: string };
+        Update: Partial<GoogleConnectionRow>;
         Relationships: [];
       };
     };

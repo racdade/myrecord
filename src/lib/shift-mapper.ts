@@ -2,12 +2,17 @@ import type { ReglasExtras, Turno } from "@/lib/calc";
 import { REGLAS_POR_DEFECTO } from "@/lib/calc";
 import type { OvertimeRuleRow, ShiftRow } from "@/types/database";
 
-/** Convierte una fila de `shifts` (snake_case, de Supabase) al `Turno` que espera lib/calc. */
+/**
+ * Convierte una fila de `shifts` (snake_case, de Supabase) al `Turno` que
+ * espera lib/calc. Postgres devuelve las columnas `time` como "HH:MM:SS"
+ * (con segundos); se recorta a "HH:MM" para que quede en el formato que
+ * espera el resto de la app (formularios, `lib/calendar`, etc.).
+ */
 export function filaATurno(fila: ShiftRow): Turno {
   return {
     fecha: fila.fecha,
-    horaInicio: fila.hora_inicio,
-    horaFin: fila.hora_fin,
+    horaInicio: fila.hora_inicio?.slice(0, 5) ?? null,
+    horaFin: fila.hora_fin?.slice(0, 5) ?? null,
     descansoMin: fila.descanso_min,
     tipo: fila.tipo,
   };

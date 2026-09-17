@@ -15,6 +15,7 @@ import { minutosAHoras, minutosNetosTurno } from "@/lib/calc";
 import { filaATurno } from "@/lib/shift-mapper";
 import { actualizarTurno, borrarTurno, crearTurno } from "./actions";
 import { TurnoForm } from "./turno-form";
+import { SincronizarButton } from "./sincronizar-button";
 
 const ETIQUETAS_TIPO: Record<string, string> = {
   normal: "Normal",
@@ -75,8 +76,8 @@ export default async function TurnosPage({
               valoresIniciales={{
                 fecha: turnoEnEdicion.fecha,
                 tipo: turnoEnEdicion.tipo,
-                horaInicio: turnoEnEdicion.hora_inicio ?? undefined,
-                horaFin: turnoEnEdicion.hora_fin ?? undefined,
+                horaInicio: turnoEnEdicion.hora_inicio?.slice(0, 5) ?? undefined,
+                horaFin: turnoEnEdicion.hora_fin?.slice(0, 5) ?? undefined,
                 descansoMin: turnoEnEdicion.descanso_min,
                 nota: turnoEnEdicion.nota ?? undefined,
                 teamId: turnoEnEdicion.team_id,
@@ -92,7 +93,8 @@ export default async function TurnosPage({
         <CardHeader>
           <CardTitle>Tus turnos</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex flex-col gap-4">
+          <SincronizarButton />
           {!turnos || turnos.length === 0 ? (
             <p className="text-sm text-muted-foreground">Todavía no registras turnos.</p>
           ) : (
@@ -119,7 +121,7 @@ export default async function TurnosPage({
                         <TableCell>
                           {turno.tipo === "libre"
                             ? "—"
-                            : `${turno.hora_inicio} – ${turno.hora_fin}`}
+                            : `${turno.hora_inicio?.slice(0, 5)} – ${turno.hora_fin?.slice(0, 5)}`}
                         </TableCell>
                         <TableCell>{turno.descanso_min} min</TableCell>
                         <TableCell>{horas.toFixed(2)} h</TableCell>

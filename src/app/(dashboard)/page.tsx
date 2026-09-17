@@ -9,7 +9,9 @@ import { createClient } from "@/lib/supabase/server";
 import { calcularPagoEstimado, minutosAHoras, minutosNetosTurno, resumirSemana } from "@/lib/calc";
 import { filaAReglas, filaATurno } from "@/lib/shift-mapper";
 import { fechaISO, inicioMes, rangoSemanaActual } from "@/lib/semana";
+import { ConectarCalendarButton } from "@/components/conectar-calendar-button";
 import { actualizarAjustes } from "./actions";
+import { desconectarGoogleCalendar } from "./calendario-actions";
 import { WeeklyChart, type DatoDiaGrafico } from "./weekly-chart";
 
 export default async function DashboardPage() {
@@ -19,9 +21,10 @@ export default async function DashboardPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: profile }, { data: reglaRow }] = await Promise.all([
+  const [{ data: profile }, { data: reglaRow }, { data: conexionCalendar }] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", user.id).single(),
     supabase.from("overtime_rules").select("*").eq("user_id", user.id).single(),
+    supabase.from("google_connections").select("*").eq("user_id", user.id).single(),
   ]);
 
   const reglas = filaAReglas(reglaRow);
@@ -204,6 +207,35 @@ export default async function DashboardPage() {
               <Button type="submit">Guardar</Button>
             </div>
           </form>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Google Calendar</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {conexionCalendar ? (
+            <div className="flex flex-col gap-2">
+              <p className="text-sm text-muted-foreground">
+                Conectado. Ve a &quot;Turnos&quot; y usa &quot;Sincronizar semana&quot; para crear o
+                actualizar los eventos.
+              </p>
+              <form action={desconectarGoogleCalendar}>
+                <Button type="submit" variant="outline">
+                  Desconectar
+                </Button>
+              </form>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              <p className="text-sm text-muted-foreground">
+                Conecta tu cuenta de Google para sincronizar tus turnos con un calendario aparte
+                (&quot;Turnos de trabajo&quot;), sin mezclar con tus eventos personales.
+              </p>
+              <ConectarCalendarButton />
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
