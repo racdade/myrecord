@@ -2,10 +2,12 @@
 
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
 function BotonGoogle() {
+  const t = useTranslations("login");
   const searchParams = useSearchParams();
   const next = searchParams.get("next") || "/";
   const [cargando, setCargando] = useState(false);
@@ -23,12 +25,12 @@ function BotonGoogle() {
         },
       });
       if (error) {
-        setError("No se pudo iniciar sesión. Intenta de nuevo.");
+        setError(t("error"));
         setCargando(false);
       }
     } catch (err) {
       console.error(err);
-      setError("No se pudo iniciar sesión. Intenta de nuevo.");
+      setError(t("error"));
       setCargando(false);
     }
   }
@@ -36,7 +38,7 @@ function BotonGoogle() {
   return (
     <>
       <Button onClick={iniciarSesion} disabled={cargando} size="lg">
-        {cargando ? "Redirigiendo…" : "Continuar con Google"}
+        {cargando ? t("redirigiendo") : t("continuar")}
       </Button>
       {error && <p className="text-sm text-destructive">{error}</p>}
     </>
@@ -44,6 +46,8 @@ function BotonGoogle() {
 }
 
 export default function LoginPage() {
+  const t = useTranslations("login");
+
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 p-6">
       <div className="flex flex-col items-center gap-3 text-center">
@@ -66,11 +70,15 @@ export default function LoginPage() {
           />
         </svg>
         <h1 className="text-2xl font-medium tracking-wide">Turnia</h1>
-        <p className="max-w-xs text-sm text-muted-foreground">
-          Registra tus horas de trabajo y horas extra.
-        </p>
+        <p className="max-w-xs text-sm text-muted-foreground">{t("descripcion")}</p>
       </div>
-      <Suspense fallback={<Button size="lg" disabled>Cargando…</Button>}>
+      <Suspense
+        fallback={
+          <Button size="lg" disabled>
+            {t("cargando")}
+          </Button>
+        }
+      >
         <BotonGoogle />
       </Suspense>
     </div>

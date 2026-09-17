@@ -18,6 +18,7 @@ import { createClient } from "@/lib/supabase/server";
 import { construirReporte } from "@/lib/reportes/construir";
 import { resolverRango } from "@/lib/reportes/acceso";
 import { rangoMes } from "@/lib/semana";
+import { formatearRangoHora } from "@/lib/formato-hora";
 import { TendenciaChart } from "./tendencia-chart";
 import { CalendarioMensual } from "./calendario-mensual";
 
@@ -61,6 +62,8 @@ export default async function ReportesPage({
     .select("fecha, nombre")
     .gte("fecha", mesActual.inicio)
     .lte("fecha", mesActual.fin);
+  const { data: profile } = await supabase.from("profiles").select("formato_hora").eq("id", user.id).single();
+  const formatoHora = profile?.formato_hora ?? "24h";
 
   const datosTendencia = reporte.tendencia.map((p) => ({
     etiqueta: format(parseISO(p.semanaInicio), "d MMM", { locale: es }),
@@ -141,9 +144,7 @@ export default async function ReportesPage({
                     <TableRow key={turno.id}>
                       <TableCell>{turno.fecha}</TableCell>
                       <TableCell>{ETIQUETAS_TIPO[turno.tipo] ?? turno.tipo}</TableCell>
-                      <TableCell>
-                        {turno.tipo === "libre" ? "—" : `${turno.hora_inicio?.slice(0, 5)} – ${turno.hora_fin?.slice(0, 5)}`}
-                      </TableCell>
+                      <TableCell>{formatearRangoHora(turno.hora_inicio, turno.hora_fin, formatoHora)}</TableCell>
                       <TableCell className="max-w-40 truncate">{turno.nota ?? "—"}</TableCell>
                     </TableRow>
                   ))}

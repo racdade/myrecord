@@ -13,6 +13,7 @@ export type ModoExtrasDB = "dia" | "semana" | "ambos";
 export type EstadoImportacionDB = "pendiente" | "listo" | "error" | "confirmado";
 export type RolEquipoDB = "admin" | "miembro";
 export type EstadoSuscripcionDB = "trial" | "activa" | "vencida" | "cancelada";
+export type FormatoHoraDB = "12h" | "24h";
 
 export type Json = string | number | boolean | null | { [clave: string]: Json } | Json[];
 
@@ -26,6 +27,7 @@ export type ProfileRow = {
   zona_horaria: string;
   admin_habilitado: boolean;
   fecha_nacimiento: string | null;
+  formato_hora: FormatoHoraDB;
   created_at: string;
   updated_at: string;
 };

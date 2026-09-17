@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Settings } from "lucide-react";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { SignOutButton } from "@/components/sign-out-button";
 import { TurniaLogo } from "@/components/turnia-logo";
@@ -21,6 +22,8 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
+  const t = await getTranslations("nav");
+
   return (
     <div className="min-h-svh">
       <header className="border-b" style={{ paddingTop: "env(safe-area-inset-top)" }}>
@@ -30,17 +33,17 @@ export default async function DashboardLayout({
               <TurniaLogo />
             </Link>
             <nav className="hidden flex-wrap gap-4 text-sm font-medium sm:flex">
-              <Link href="/dashboard">Dashboard</Link>
-              <Link href="/turnos">Turnos</Link>
-              <Link href="/reportes">Reportes</Link>
-              <Link href="/equipo">Equipo</Link>
-              <Link href="/planes">Planes</Link>
+              <Link href="/dashboard">{t("dashboard")}</Link>
+              <Link href="/turnos">{t("turnos")}</Link>
+              <Link href="/reportes">{t("reportes")}</Link>
+              <Link href="/equipo">{t("equipo")}</Link>
+              <Link href="/planes">{t("planes")}</Link>
             </nav>
           </div>
           <div className="flex items-center gap-2">
             <Link
               href="/configuracion"
-              aria-label="Configuración"
+              aria-label={t("configuracion")}
               className={buttonVariants({ variant: "ghost", size: "icon" })}
             >
               <Settings className="size-4" aria-hidden="true" />

@@ -13,6 +13,7 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { minutosAHoras, minutosNetosTurno } from "@/lib/calc";
 import { filaATurno } from "@/lib/shift-mapper";
+import { formatearRangoHora } from "@/lib/formato-hora";
 import { actualizarTurno, borrarTurno, crearTurno } from "./actions";
 import { TurnoForm } from "./turno-form";
 import { SincronizarButton } from "./sincronizar-button";
@@ -36,14 +37,17 @@ export default async function TurnosPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: turnos, error }, { data: membresias }] = await Promise.all([
+  const [{ data: turnos, error }, { data: membresias }, { data: profile }] = await Promise.all([
     supabase.from("shifts").select("*").eq("user_id", user.id).order("fecha", { ascending: false }).limit(60),
     supabase.from("team_members").select("team_id").eq("user_id", user.id),
+    supabase.from("profiles").select("formato_hora").eq("id", user.id).single(),
   ]);
 
   if (error) {
     throw new Error(error.message);
   }
+
+  const formatoHora = profile?.formato_hora ?? "24h";
 
   const teamId = membresias?.[0]?.team_id;
   let equipo: { id: string; nombre: string } | null = null;
@@ -118,11 +122,7 @@ export default async function TurnosPage({
                       <TableRow key={turno.id}>
                         <TableCell>{turno.fecha}</TableCell>
                         <TableCell>{ETIQUETAS_TIPO[turno.tipo] ?? turno.tipo}</TableCell>
-                        <TableCell>
-                          {turno.tipo === "libre"
-                            ? "—"
-                            : `${turno.hora_inicio?.slice(0, 5)} – ${turno.hora_fin?.slice(0, 5)}`}
-                        </TableCell>
+                        <TableCell>{formatearRangoHora(turno.hora_inicio, turno.hora_fin, formatoHora)}</TableCell>
                         <TableCell>{turno.descanso_min} min</TableCell>
                         <TableCell>{horas.toFixed(2)} h</TableCell>
                         <TableCell className="max-w-40 truncate">{turno.nota ?? "—"}</TableCell>

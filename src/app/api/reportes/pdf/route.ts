@@ -3,6 +3,8 @@ import PDFDocument from "pdfkit";
 import { createClient } from "@/lib/supabase/server";
 import { construirReporte, type ReporteDatos } from "@/lib/reportes/construir";
 import { puedeVerReporteDe, resolverRango } from "@/lib/reportes/acceso";
+import { formatearRangoHora } from "@/lib/formato-hora";
+import type { FormatoHoraDB } from "@/types/database";
 
 export const runtime = "nodejs";
 
@@ -15,12 +17,12 @@ const ETIQUETAS_TIPO: Record<string, string> = {
 const COLUMNAS = [
   { titulo: "Fecha", ancho: 75 },
   { titulo: "Tipo", ancho: 60 },
-  { titulo: "Horario", ancho: 100 },
+  { titulo: "Horario", ancho: 130 },
   { titulo: "Descanso", ancho: 60 },
-  { titulo: "Nota", ancho: 155 },
+  { titulo: "Nota", ancho: 130 },
 ];
 
-function generarPdf(reporte: ReporteDatos): Promise<Buffer> {
+function generarPdf(reporte: ReporteDatos, formatoHora: FormatoHoraDB): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({ margin: 40, size: "A4" });
     const chunks: Buffer[] = [];
@@ -71,8 +73,7 @@ function generarPdf(reporte: ReporteDatos): Promise<Buffer> {
         encabezadoTabla();
       }
 
-      const horario =
-        turno.tipo === "libre" ? "—" : `${turno.hora_inicio?.slice(0, 5)} – ${turno.hora_fin?.slice(0, 5)}`;
+      const horario = formatearRangoHora(turno.hora_inicio, turno.hora_fin, formatoHora);
       const valores = [
         turno.fecha,
         ETIQUETAS_TIPO[turno.tipo] ?? turno.tipo,
@@ -117,7 +118,9 @@ export async function GET(request: Request) {
   });
 
   const reporte = await construirReporte(supabase, userId, rango);
-  const buffer = await generarPdf(reporte);
+
+  const { data: profile } = await supabase.from("profiles").select("formato_hora").eq("id", user.id).single();
+  const buffer = await generarPdf(reporte, profile?.formato_hora ?? "24h");
 
   return new NextResponse(new Uint8Array(buffer), {
     headers: {

@@ -16,6 +16,7 @@ import { createClient } from "@/lib/supabase/server";
 import { construirReporte } from "@/lib/reportes/construir";
 import { puedeVerReporteDe, resolverRango } from "@/lib/reportes/acceso";
 import { rangoMes } from "@/lib/semana";
+import { formatearRangoHora } from "@/lib/formato-hora";
 import { TendenciaChart } from "../../reportes/tendencia-chart";
 import { CalendarioMensual } from "../../reportes/calendario-mensual";
 
@@ -54,6 +55,9 @@ export default async function DetalleMiembroPage({
   const modo = busqueda.modo === "mes" || busqueda.modo === "rango" ? busqueda.modo : "semana";
   const rango = resolverRango(busqueda);
   const reporte = await construirReporte(supabase, userId, rango);
+
+  const { data: profileAdmin } = await supabase.from("profiles").select("formato_hora").eq("id", user.id).single();
+  const formatoHora = profileAdmin?.formato_hora ?? "24h";
 
   const mesActual = rangoMes();
   const { data: turnosMes } = await supabase
@@ -150,7 +154,7 @@ export default async function DetalleMiembroPage({
                       <TableCell>{turno.fecha}</TableCell>
                       <TableCell>{ETIQUETAS_TIPO[turno.tipo] ?? turno.tipo}</TableCell>
                       <TableCell>
-                        {turno.tipo === "libre" ? "—" : `${turno.hora_inicio?.slice(0, 5)} – ${turno.hora_fin?.slice(0, 5)}`}
+                        {formatearRangoHora(turno.hora_inicio, turno.hora_fin, formatoHora)}
                       </TableCell>
                       <TableCell className="max-w-40 truncate">{turno.nota ?? "—"}</TableCell>
                     </TableRow>

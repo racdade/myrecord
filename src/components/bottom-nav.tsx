@@ -2,19 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Clock, CreditCard, FileText, Home, LayoutDashboard, Users } from "lucide-react";
 
 const TABS = [
-  { href: "/", label: "Inicio", Icon: Home },
-  { href: "/dashboard", label: "Dashboard", Icon: LayoutDashboard },
-  { href: "/turnos", label: "Turnos", Icon: Clock },
-  { href: "/reportes", label: "Reportes", Icon: FileText },
-  { href: "/equipo", label: "Equipo", Icon: Users },
-  { href: "/planes", label: "Planes", Icon: CreditCard },
+  { href: "/", key: "inicio", Icon: Home },
+  { href: "/dashboard", key: "dashboard", Icon: LayoutDashboard },
+  { href: "/turnos", key: "turnos", Icon: Clock },
+  { href: "/reportes", key: "reportes", Icon: FileText },
+  { href: "/equipo", key: "equipo", Icon: Users },
+  { href: "/planes", key: "planes", Icon: CreditCard },
 ] as const;
 
 export function BottomNav() {
   const pathname = usePathname();
+  const t = useTranslations("nav");
 
   return (
     <nav
@@ -22,7 +24,7 @@ export function BottomNav() {
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <div className="mx-auto flex max-w-4xl items-stretch justify-around">
-        {TABS.map(({ href, label, Icon }) => {
+        {TABS.map(({ href, key, Icon }) => {
           const activo = href === "/" ? pathname === "/" : pathname.startsWith(href);
           return (
             <Link
@@ -33,7 +35,7 @@ export function BottomNav() {
               }`}
             >
               <Icon className="size-5" aria-hidden="true" />
-              {label}
+              {t(key)}
             </Link>
           );
         })}

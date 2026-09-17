@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { esCumpleanosHoy, mensajeAlAzar, mensajeCumpleanos } from "./mensajes-animo";
+import { combinarMensaje, esCumpleanosHoy, mensajeCumpleanosAlAzar } from "./mensajes-animo";
 
 describe("esCumpleanosHoy", () => {
   it("es false si no hay fecha de nacimiento", () => {
@@ -25,11 +25,21 @@ describe("esCumpleanosHoy", () => {
   });
 });
 
-describe("mensajeAlAzar / mensajeCumpleanos", () => {
-  it("siempre devuelve un texto no vacío", () => {
+describe("combinarMensaje / mensajeCumpleanosAlAzar", () => {
+  const APERTURAS = ["A1", "A2"];
+  const CIERRES = ["C1", "C2", "C3"];
+  const CUMPLEANOS = ["Feliz cumpleaños!"];
+
+  it("combina una apertura y un cierre de las listas dadas", () => {
     for (let i = 0; i < 20; i++) {
-      expect(mensajeAlAzar().length).toBeGreaterThan(0);
-      expect(mensajeCumpleanos().length).toBeGreaterThan(0);
+      const mensaje = combinarMensaje(APERTURAS, CIERRES);
+      const [apertura, cierre] = mensaje.split(" ");
+      expect(APERTURAS).toContain(apertura);
+      expect(CIERRES).toContain(cierre);
     }
+  });
+
+  it("elige un mensaje de cumpleaños de la lista dada", () => {
+    expect(mensajeCumpleanosAlAzar(CUMPLEANOS)).toBe("Feliz cumpleaños!");
   });
 });
