@@ -43,3 +43,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# service worker generado por scripts/build-sw.mjs (parte de `npm run build`)
+/public/sw.js
+/public/sw.js.map
