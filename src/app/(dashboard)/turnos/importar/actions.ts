@@ -33,6 +33,7 @@ export async function interpretarHorario(formData: FormData): Promise<ResultadoI
   }
 
   const texto = String(formData.get("texto") ?? "").trim();
+  const nombrePersona = String(formData.get("nombrePersona") ?? "").trim() || undefined;
   const foto = formData.get("foto");
   const tieneFoto = foto instanceof File && foto.size > 0;
 
@@ -67,9 +68,10 @@ export async function interpretarHorario(formData: FormData): Promise<ResultadoI
         base64,
         archivo.type as "image/jpeg" | "image/png" | "image/webp",
         semanaInicio,
+        nombrePersona,
       );
     } else {
-      turnos = await interpretarHorarioTexto(texto, semanaInicio);
+      turnos = await interpretarHorarioTexto(texto, semanaInicio, nombrePersona);
     }
   } catch (err) {
     const mensaje = err instanceof Error ? err.message : "Error desconocido";

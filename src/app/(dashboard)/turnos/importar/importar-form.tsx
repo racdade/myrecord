@@ -2,6 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { format, parseISO } from "date-fns";
+import { es } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,6 +36,12 @@ interface Revision {
 
 const CLASE_SELECT =
   "h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30";
+
+function nombreDia(fechaISO: string): string {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(fechaISO)) return "—";
+  const nombre = format(parseISO(fechaISO), "EEEE", { locale: es });
+  return nombre.charAt(0).toUpperCase() + nombre.slice(1);
+}
 
 export function ImportarHorarioForm({ semanaInicioPorDefecto }: { semanaInicioPorDefecto: string }) {
   const router = useRouter();
@@ -107,6 +115,7 @@ export function ImportarHorarioForm({ semanaInicioPorDefecto }: { semanaInicioPo
             <TableHeader>
               <TableRow>
                 <TableHead>Fecha</TableHead>
+                <TableHead>Día</TableHead>
                 <TableHead>Tipo</TableHead>
                 <TableHead>Entrada</TableHead>
                 <TableHead>Salida</TableHead>
@@ -125,6 +134,7 @@ export function ImportarHorarioForm({ semanaInicioPorDefecto }: { semanaInicioPo
                       onChange={(e) => actualizarFila(indice, { fecha: e.target.value })}
                     />
                   </TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{nombreDia(fila.fecha)}</TableCell>
                   <TableCell>
                     <select
                       value={fila.tipo}
@@ -235,6 +245,15 @@ export function ImportarHorarioForm({ semanaInicioPorDefecto }: { semanaInicioPo
         <Button type="submit" disabled={pendienteInterpretar}>
           {pendienteInterpretar ? "Leyendo horario…" : "Leer horario"}
         </Button>
+      </div>
+
+      <div className="grid gap-1.5 sm:max-w-sm">
+        <Label htmlFor="nombrePersona">Leer solo el horario de (opcional)</Label>
+        <Input id="nombrePersona" name="nombrePersona" type="text" placeholder="Ej: Adolfo" maxLength={100} />
+        <p className="text-xs text-muted-foreground">
+          Si la foto o el texto tiene el horario de varias personas, escribe el nombre para que se
+          lean solo sus turnos.
+        </p>
       </div>
     </form>
   );
