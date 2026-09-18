@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { cifrar } from "@/lib/calendar/crypto";
@@ -10,12 +9,6 @@ export async function GET(request: Request) {
   const conectandoCalendar = searchParams.get("calendar") === "1";
 
   if (code) {
-    const cookieStore = await cookies();
-    console.error(
-      "[auth/callback] cookies presentes:",
-      cookieStore.getAll().map((c) => c.name),
-    );
-
     const supabase = await createClient();
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {

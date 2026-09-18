@@ -17,7 +17,13 @@ const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
   skipWaiting: true,
   clientsClaim: true,
-  navigationPreload: true,
+  // navigationPreload manda una petición de red en paralelo a cada
+  // navegación para que un handler la reutilice; como no tenemos ningún
+  // runtimeCaching que la consuma, solo generaba una segunda petición
+  // "de más" a cada página — y en /auth/callback esa duplicada llegaba con
+  // el mismo código de Google ya usado, rompiendo el login (PKCE es de un
+  // solo uso). Sin runtimeCaching, no hay nada que se beneficie de esto.
+  navigationPreload: false,
   runtimeCaching: [],
 });
 
