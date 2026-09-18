@@ -7,6 +7,7 @@
     "equipo": "Equipo",
     "planes": "Planes",
     "configuracion": "Configuración",
+    "sobreNosotros": "Sobre nosotros",
     "salir": "Salir"
   },
   "login": {
@@ -301,5 +302,51 @@
     "volverAlInicio": "Volver al inicio",
     "noEncontrada": "No encontramos esta página",
     "noEncontradaDescripcion": "El enlace puede estar mal escrito, o la página ya no existe."
+  },
+  "sobreNosotros": {
+    "titulo": "Sobre nosotros",
+    "tagline": "Llankia · Tus horas, claras.",
+    "pronunciacion": "Se pronuncia yan-KÍ-a.",
+    "verMas": "Sobre Llankia",
+    "configuracionDescripcion": "La visión, la misión y de dónde viene el nombre de la marca.",
+    "nombre": {
+      "titulo": "De dónde viene el nombre",
+      "p1": "Llankia nace de llank'ay, palabra quechua que significa trabajar. En el mundo andino, el trabajo nunca fue solo una forma de ganarse la vida: es constancia, orgullo y comunidad.",
+      "p2": "Llank'ay forma parte de una manera de entender la vida junto con yachay (saber) y munay (querer): saber, querer y trabajar. Elegimos ese origen porque resume lo que queremos que sientas al usar la app: tu trabajo vale, y tus horas merecen quedar registradas."
+    },
+    "queEs": {
+      "titulo": "Qué es Llankia y qué tiene que ver con tus horas",
+      "p1": "Llankia es una app para que cada persona lleve el control de sus horas trabajadas y sus horas extra, sin planillas complicadas ni cuadernos que se pierden.",
+      "p2": "Tomas una foto de tu horario o lo escribes, y Llankia lo convierte en algo claro: cuántas horas trabajaste esta semana, cuántas fueron extra y cuánto representan. Tus turnos incluso se sincronizan con tu calendario, así nunca más olvidas a qué hora entras."
+    },
+    "simbolo": {
+      "titulo": "El símbolo: reloj resuelto",
+      "p1": "El logo de Llankia es un reloj que se lee como un check. El círculo representa el tiempo; las agujas, al nacer del centro, dibujan la señal de hecho, registrado, comprobado.",
+      "frase": "Un reloj que se cierra con un check: tiempo registrado, semana resuelta."
+    },
+    "mision": {
+      "titulo": "Misión",
+      "texto": "Darle a cada trabajador el control y la claridad sobre su propio tiempo. Creemos que saber exactamente cuántas horas trabajaste no debería ser un privilegio ni un trámite. Por eso hacemos que registrarlas tome segundos y que entenderlas sea inmediato."
+    },
+    "vision": {
+      "titulo": "Visión",
+      "texto": "Ser la app de confianza de los trabajadores por turnos de Latinoamérica: el lugar donde cada hora queda registrada con claridad, y donde equipos y empresas encuentran una forma justa y transparente de organizar el tiempo de trabajo."
+    },
+    "valores": {
+      "titulo": "Valores",
+      "items": [
+        { "titulo": "Claridad", "texto": "Cada pantalla responde una pregunta simple: ¿cuánto trabajé y cuánto me corresponde? Sin letra chica." },
+        { "titulo": "Respeto por tu tiempo", "texto": "La app se adapta a tu horario, no al revés. Si tus turnos cambian cada semana, Llankia cambia contigo." },
+        { "titulo": "Tus datos son tuyos", "texto": "Tus horas, tus fotos y tu información te pertenecen. No los vendemos ni los compartimos." },
+        { "titulo": "Hecho desde acá", "texto": "Llankia se construye en Lima, pensando en cómo se trabaja realmente en la región: turnos rotativos, horarios en papel y grupos de WhatsApp." },
+        { "titulo": "Simple de verdad", "texto": "Si una función no le hace la vida más fácil a alguien que sale cansado de su turno, no entra." }
+      ]
+    },
+    "historia": {
+      "titulo": "Nuestra historia",
+      "p1": "Llankia empezó por un problema propio. Su fundador, Adolfo, lleva años trabajando por turnos en hotelería y servicios en Lima. Cada semana el horario cambia, llega por foto o en un papel pegado en la pared, y las horas extra terminan anotadas en cualquier lado: en el celular, en una libreta o solo en la memoria.",
+      "p2": "De ahí nació la pregunta: ¿por qué llevar la cuenta de tu propio trabajo tiene que ser tan complicado? Llankia es la respuesta: una app hecha por alguien que vive esos turnos, para las miles de personas que los viven todos los días."
+    },
+    "notaLegal": "Llankia es una herramienta de registro personal de horas. Los cálculos de horas extra son referenciales y dependen de la configuración que elija cada usuario y de su contrato de trabajo. No constituyen asesoría legal ni laboral."
   }
 }

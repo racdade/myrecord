@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { buttonVariants } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { SelectorTema } from "./selector-tema";
 import { SelectorFormatoHora } from "./selector-formato-hora";
@@ -20,6 +22,8 @@ export default async function ConfiguracionPage() {
     .single();
 
   const t = await getTranslations("configuracion");
+  const tSobre = await getTranslations("sobreNosotros");
+  const tNav = await getTranslations("nav");
 
   return (
     <div className="flex flex-col gap-6">
@@ -50,6 +54,18 @@ export default async function ConfiguracionPage() {
         <CardContent className="flex flex-col gap-2">
           <p className="text-sm text-muted-foreground">{t("idioma.descripcion")}</p>
           <SelectorIdioma />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{tNav("sobreNosotros")}</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-3">
+          <p className="text-sm text-muted-foreground">{tSobre("configuracionDescripcion")}</p>
+          <Link href="/sobre-nosotros" className={buttonVariants({ variant: "outline", size: "sm", className: "self-start" })}>
+            {tSobre("verMas")}
+          </Link>
         </CardContent>
       </Card>
     </div>

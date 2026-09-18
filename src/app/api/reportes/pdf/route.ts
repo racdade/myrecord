@@ -22,6 +22,17 @@ const COLUMNAS = [
   { titulo: "Nota", ancho: 130 },
 ];
 
+/** Dibuja el isotipo de Llankia (círculo abierto + check) en (x, y) con el lado `size`. */
+function dibujarLogo(doc: PDFKit.PDFDocument, x: number, y: number, size: number) {
+  const escala = size / 48;
+  doc.save();
+  doc.translate(x, y).scale(escala);
+  doc.lineWidth(3 / escala).lineCap("round").lineJoin("round").strokeColor("#0A0A0A");
+  doc.path("M40.4 19.6 A17 17 0 1 1 32 9").stroke();
+  doc.path("M15 16 L24 24 L37.5 9.5").stroke();
+  doc.restore();
+}
+
 function generarPdf(reporte: ReporteDatos, formatoHora: FormatoHoraDB): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({ margin: 40, size: "A4" });
@@ -30,8 +41,22 @@ function generarPdf(reporte: ReporteDatos, formatoHora: FormatoHoraDB): Promise<
     doc.on("end", () => resolve(Buffer.concat(chunks)));
     doc.on("error", reject);
 
-    doc.fontSize(18).font("Helvetica-Bold").text("Reporte de horas — app-horas");
-    doc.moveDown(0.3);
+    const inicioX = doc.page.margins.left;
+    const inicioTitulo = doc.y;
+    dibujarLogo(doc, inicioX, inicioTitulo + 2, 20);
+    doc
+      .fontSize(18)
+      .font("Helvetica-Bold")
+      .fillColor("#0A0A0A")
+      .text("Llankia", inicioX + 28, inicioTitulo, { lineBreak: false });
+    doc
+      .fontSize(13)
+      .font("Helvetica")
+      .fillColor("#0A0A0A")
+      .text("Reporte de horas", inicioX + 28, inicioTitulo + 22, { lineBreak: false });
+
+    doc.x = inicioX;
+    doc.y = inicioTitulo + 44;
     doc
       .fontSize(11)
       .font("Helvetica")
@@ -45,7 +70,6 @@ function generarPdf(reporte: ReporteDatos, formatoHora: FormatoHoraDB): Promise<
     doc.text(`Pago estimado: ${reporte.formatoMoneda.format(reporte.pagoEstimado)}`);
     doc.moveDown();
 
-    const inicioX = doc.page.margins.left;
     let y = doc.y;
 
     function encabezadoTabla() {

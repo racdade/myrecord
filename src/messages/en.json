@@ -7,6 +7,7 @@
     "equipo": "Team",
     "planes": "Plans",
     "configuracion": "Settings",
+    "sobreNosotros": "About us",
     "salir": "Sign out"
   },
   "login": {
@@ -301,5 +302,51 @@
     "volverAlInicio": "Back to home",
     "noEncontrada": "We couldn't find this page",
     "noEncontradaDescripcion": "The link may be mistyped, or the page no longer exists."
+  },
+  "sobreNosotros": {
+    "titulo": "About us",
+    "tagline": "Llankia · Your hours, clear.",
+    "pronunciacion": "Pronounced yan-KEE-ah.",
+    "verMas": "About Llankia",
+    "configuracionDescripcion": "Our vision, our mission, and where the brand's name comes from.",
+    "nombre": {
+      "titulo": "Where the name comes from",
+      "p1": "Llankia comes from llank'ay, a Quechua word that means to work. In the Andean world, work was never just a way to make a living: it's persistence, pride, and community.",
+      "p2": "Llank'ay is part of a way of understanding life alongside yachay (to know) and munay (to want): to know, to want, and to work. We chose that origin because it sums up what we want you to feel when using the app: your work matters, and your hours deserve to be recorded."
+    },
+    "queEs": {
+      "titulo": "What Llankia is, and how it relates to your hours",
+      "p1": "Llankia is an app for keeping track of your worked hours and overtime, without complicated spreadsheets or notebooks that get lost.",
+      "p2": "You take a photo of your schedule or type it in, and Llankia turns it into something clear: how many hours you worked this week, how many were overtime, and what they add up to. Your shifts even sync with your calendar, so you never forget what time you start."
+    },
+    "simbolo": {
+      "titulo": "The symbol: a resolved clock",
+      "p1": "Llankia's logo is a clock that reads like a checkmark. The circle represents time; the hands, meeting at the center, draw the sign of done, recorded, confirmed.",
+      "frase": "A clock that closes into a checkmark: time recorded, week resolved."
+    },
+    "mision": {
+      "titulo": "Mission",
+      "texto": "To give every worker control and clarity over their own time. We believe knowing exactly how many hours you worked shouldn't be a privilege or a chore. That's why we make recording them take seconds, and understanding them instant."
+    },
+    "vision": {
+      "titulo": "Vision",
+      "texto": "To be the trusted app for shift workers across Latin America: the place where every hour is clearly recorded, and where teams and companies find a fair, transparent way to organize working time."
+    },
+    "valores": {
+      "titulo": "Values",
+      "items": [
+        { "titulo": "Clarity", "texto": "Every screen answers a simple question: how much did I work, and how much am I owed? No fine print." },
+        { "titulo": "Respect for your time", "texto": "The app adapts to your schedule, not the other way around. If your shifts change every week, Llankia changes with you." },
+        { "titulo": "Your data is yours", "texto": "Your hours, your photos, and your information belong to you. We don't sell or share them." },
+        { "titulo": "Made from here", "texto": "Llankia is built in Lima, thinking about how work actually happens in the region: rotating shifts, paper schedules, and WhatsApp groups." },
+        { "titulo": "Genuinely simple", "texto": "If a feature doesn't make life easier for someone coming home tired from their shift, it doesn't ship." }
+      ]
+    },
+    "historia": {
+      "titulo": "Our story",
+      "p1": "Llankia started from a personal problem. Its founder, Adolfo, has spent years working shifts in hospitality and services in Lima. Every week the schedule changes, arriving as a photo or a paper taped to the wall, and overtime ends up written down anywhere: on a phone, in a notebook, or only in memory.",
+      "p2": "From there came the question: why should keeping track of your own work be this complicated? Llankia is the answer: an app made by someone who lives those shifts, for the thousands of people who live them every day."
+    },
+    "notaLegal": "Llankia is a personal hour-tracking tool. Overtime calculations are indicative and depend on each user's settings and employment contract. They do not constitute legal or labor advice."
   }
 }
