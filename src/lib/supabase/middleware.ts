@@ -7,6 +7,16 @@ import { NextResponse, type NextRequest } from "next/server";
  * queda deslogueado aunque tenga un refresh token válido.
  */
 export async function updateSession(request: NextRequest) {
+  // El intercambio del código PKCE en /auth/callback depende de la cookie
+  // del "code verifier" puesta por el cliente al iniciar el login. Si este
+  // middleware llama getUser() antes de esa ruta, puede terminar limpiando
+  // esa cookie (no hay sesión todavía) y el intercambio falla con
+  // "invalid flow state, no valid flow state found". Esa ruta no necesita
+  // sesión refrescada de todas formas: solo procesa el código y redirige.
+  if (request.nextUrl.pathname.startsWith("/auth/callback")) {
+    return NextResponse.next({ request });
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
