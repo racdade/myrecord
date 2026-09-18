@@ -17,7 +17,14 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const sitioBaseUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : undefined);
+
 export const metadata: Metadata = {
+  ...(sitioBaseUrl ? { metadataBase: new URL(sitioBaseUrl) } : {}),
   title: "Llankia",
   description: "Registra tus horas de trabajo y horas extra.",
   appleWebApp: {

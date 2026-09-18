@@ -9,7 +9,7 @@ import { createClient } from "@/lib/supabase/client";
 function BotonGoogle() {
   const t = useTranslations("login");
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") || "/";
+  const next = searchParams.get("next") || "/dashboard";
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

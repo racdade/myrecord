@@ -3,10 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Clock, CreditCard, FileText, Home, LayoutDashboard, Users } from "lucide-react";
+import { Clock, CreditCard, FileText, LayoutDashboard, Users } from "lucide-react";
 
 const TABS = [
-  { href: "/", key: "inicio", Icon: Home },
   { href: "/dashboard", key: "dashboard", Icon: LayoutDashboard },
   { href: "/turnos", key: "turnos", Icon: Clock },
   { href: "/reportes", key: "reportes", Icon: FileText },
@@ -25,7 +24,7 @@ export function BottomNav() {
     >
       <div className="mx-auto flex max-w-4xl items-stretch justify-around">
         {TABS.map(({ href, key, Icon }) => {
-          const activo = href === "/" ? pathname === "/" : pathname.startsWith(href);
+          const activo = pathname.startsWith(href);
           return (
             <Link
               key={href}

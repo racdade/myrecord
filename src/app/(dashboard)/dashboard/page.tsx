@@ -1,5 +1,6 @@
 import { eachDayOfInterval, format, parseISO } from "date-fns";
 import { enUS, es } from "date-fns/locale";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,9 +12,11 @@ import { calcularPagoEstimado, minutosAHoras, minutosNetosTurno, resumirSemana }
 import { filaAReglas, filaATurno } from "@/lib/shift-mapper";
 import { fechaISO, inicioMes, rangoSemanaActual } from "@/lib/semana";
 import { ConectarCalendarButton } from "@/components/conectar-calendar-button";
+import { combinarMensaje, esCumpleanosHoy, mensajeCumpleanosAlAzar } from "@/lib/mensajes-animo";
 import { actualizarAjustes } from "../actions";
 import { desconectarGoogleCalendar } from "../calendario-actions";
 import { WeeklyChart, type DatoDiaGrafico } from "./weekly-chart";
+import { version } from "../../../../package.json";
 
 const LOCALES_DATE_FNS = { es, en: enUS };
 
@@ -89,9 +92,51 @@ export default async function DashboardPage() {
 
   const t = await getTranslations("dashboard");
   const tc = await getTranslations("comun");
+  const tInicio = await getTranslations("inicio");
+  const tMensajes = await getTranslations("mensajesAnimo");
+  const tSobre = await getTranslations("sobreNosotros");
+
+  const esCumpleanos = esCumpleanosHoy(profile?.fecha_nacimiento);
+  const mensaje = esCumpleanos
+    ? mensajeCumpleanosAlAzar(tMensajes.raw("cumpleanos"))
+    : combinarMensaje(tMensajes.raw("aperturas"), tMensajes.raw("cierres"));
+
+  const saludo = esCumpleanos
+    ? profile?.nombre
+      ? tInicio("cumpleanosConNombre", { nombre: profile.nombre })
+      : tInicio("cumpleanosSinNombre")
+    : profile?.nombre
+      ? tInicio("saludoConNombre", { nombre: profile.nombre })
+      : tInicio("saludoSinNombre");
+
+  const ACCESOS_RAPIDOS = [
+    { href: "/turnos", titulo: tInicio("accesoTurnosTitulo"), descripcion: tInicio("accesoTurnosDescripcion") },
+    { href: "/reportes", titulo: tInicio("accesoReportesTitulo"), descripcion: tInicio("accesoReportesDescripcion") },
+    { href: "/equipo", titulo: tInicio("accesoEquipoTitulo"), descripcion: tInicio("accesoEquipoDescripcion") },
+  ];
 
   return (
     <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2 py-2">
+        <h1 className="text-3xl font-medium tracking-wide">{saludo}</h1>
+        <p className="text-base text-muted-foreground">{mensaje}</p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        {ACCESOS_RAPIDOS.map((acceso) => (
+          <Link key={acceso.href} href={acceso.href}>
+            <Card className="h-full transition-colors hover:bg-muted/50">
+              <CardHeader>
+                <CardTitle>{acceso.titulo}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">{acceso.descripcion}</p>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
+
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <TarjetaResumen titulo={t("horasDeLaSemana")} valor={`${horasSemana.toFixed(1)} h`} />
         <TarjetaResumen titulo={t("extrasDeLaSemana")} valor={`${extrasSemana.toFixed(1)} h`} />
@@ -250,6 +295,18 @@ export default async function DashboardPage() {
           )}
         </CardContent>
       </Card>
+
+      <div className="rounded-lg border p-4">
+        <p className="text-sm font-medium">{tInicio("notaImportanteTitulo")}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{tSobre("notaLegal")}</p>
+      </div>
+
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <span>
+          {tInicio("versionBeta")} · v{version}
+        </span>
+        <span>{tInicio("enDesarrollo")}</span>
+      </div>
     </div>
   );
 }
