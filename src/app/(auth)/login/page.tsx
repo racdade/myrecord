@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
+import { limpiarCookiesDeIntentosAnteriores } from "@/lib/auth-cookies";
 
 function BotonGoogle() {
   const t = useTranslations("login");
@@ -17,6 +18,7 @@ function BotonGoogle() {
     setCargando(true);
     setError(null);
     try {
+      limpiarCookiesDeIntentosAnteriores();
       const supabase = createClient();
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",

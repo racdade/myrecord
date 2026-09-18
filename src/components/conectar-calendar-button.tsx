@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
+import { limpiarCookiesDeIntentosAnteriores } from "@/lib/auth-cookies";
 
 export function ConectarCalendarButton() {
   const t = useTranslations("conectarCalendar");
@@ -14,6 +15,7 @@ export function ConectarCalendarButton() {
     setCargando(true);
     setError(null);
     try {
+      limpiarCookiesDeIntentosAnteriores();
       const supabase = createClient();
       const params = new URLSearchParams({ next: "/dashboard", calendar: "1" });
       const { error } = await supabase.auth.signInWithOAuth({
