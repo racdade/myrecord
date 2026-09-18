@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { combinarMensaje, esCumpleanosHoy, mensajeCumpleanosAlAzar } from "@/lib/mensajes-animo";
+import { version } from "../../../package.json";
 
 export default async function InicioPage() {
   const supabase = await createClient();
@@ -20,6 +21,7 @@ export default async function InicioPage() {
 
   const t = await getTranslations("inicio");
   const tMensajes = await getTranslations("mensajesAnimo");
+  const tSobre = await getTranslations("sobreNosotros");
 
   const esCumpleanos = esCumpleanosHoy(profile?.fecha_nacimiento);
   const mensaje = esCumpleanos
@@ -61,6 +63,18 @@ export default async function InicioPage() {
             </Card>
           </Link>
         ))}
+      </div>
+
+      <div className="rounded-lg border p-4">
+        <p className="text-sm font-medium">{t("notaImportanteTitulo")}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{tSobre("notaLegal")}</p>
+      </div>
+
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <span>
+          {t("versionBeta")} · v{version}
+        </span>
+        <span>{t("enDesarrollo")}</span>
       </div>
     </div>
   );

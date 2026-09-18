@@ -29,7 +29,10 @@
     "accesoReportesTitulo": "Reports",
     "accesoReportesDescripcion": "Trends, calendar, and export to CSV/PDF.",
     "accesoEquipoTitulo": "Team",
-    "accesoEquipoDescripcion": "Your team, if you manage or belong to one."
+    "accesoEquipoDescripcion": "Your team, if you manage or belong to one.",
+    "notaImportanteTitulo": "Important note",
+    "versionBeta": "Beta version",
+    "enDesarrollo": "developing"
   },
   "mensajesAnimo": {
     "aperturas": [

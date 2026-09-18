@@ -29,7 +29,10 @@
     "accesoReportesTitulo": "Reportes",
     "accesoReportesDescripcion": "Tendencias, calendario y exportar a CSV/PDF.",
     "accesoEquipoTitulo": "Equipo",
-    "accesoEquipoDescripcion": "Tu equipo, si administras o eres parte de uno."
+    "accesoEquipoDescripcion": "Tu equipo, si administras o eres parte de uno.",
+    "notaImportanteTitulo": "Nota importante",
+    "versionBeta": "Versión beta",
+    "enDesarrollo": "En desarrollo"
   },
   "mensajesAnimo": {
     "aperturas": [
