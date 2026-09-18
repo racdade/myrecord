@@ -25,6 +25,11 @@ function htmlBienvenida(nombre: string | null): string {
          style="display: inline-block; background: #0A0A0A; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 999px; font-size: 15px; font-weight: 500;">
         Abrir Llankia
       </a>
+      <p style="font-size: 15px; line-height: 1.6; color: #444; margin: 32px 0 0;">
+        Gracias por confiarnos el registro de tu tiempo. Cada hora que trabajas vale, y aquí
+        va a quedar siempre clara.
+      </p>
+      <p style="font-size: 15px; margin: 16px 0 0;">Con cariño,<br />El equipo de Llankia</p>
       <p style="font-size: 12px; color: #999; margin: 32px 0 0;">Llankia · Tus horas, claras.</p>
     </div>
   `;
