@@ -348,5 +348,16 @@
       "p2": "De ahí nació la pregunta: ¿por qué llevar la cuenta de tu propio trabajo tiene que ser tan complicado? Llankia es la respuesta: una app hecha por alguien que vive esos turnos, para las miles de personas que los viven todos los días."
     },
     "notaLegal": "Llankia es una herramienta de registro personal de horas. Los cálculos de horas extra son referenciales y dependen de la configuración que elija cada usuario y de su contrato de trabajo. No constituyen asesoría legal ni laboral."
+  },
+  "contacto": {
+    "titulo": "Contacto",
+    "descripcion": "Habla con el desarrollador, deja tu sugerencia",
+    "boton": "Escribir un mensaje",
+    "asunto": "Llankia - Sugerencia",
+    "cuerpo": "Escribe aquí tu mensaje o sugerencia.\n\n—\nEnviado desde Llankia por {email}"
+  },
+  "notificaciones": {
+    "titulo": "Notificaciones",
+    "vacio": "Todavía no tienes mensajes."
   }
 }

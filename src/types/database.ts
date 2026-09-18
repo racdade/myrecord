@@ -142,6 +142,14 @@ export type BillingEventRow = {
   created_at: string;
 };
 
+export type NotificationRow = {
+  id: string;
+  user_id: string;
+  mensaje: string;
+  leido: boolean;
+  created_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -211,6 +219,12 @@ export type Database = {
         Update: Partial<HolidayRow>;
         Relationships: [];
       };
+      notifications: {
+        Row: NotificationRow;
+        Insert: Partial<NotificationRow> & { user_id: string; mensaje: string };
+        Update: Partial<NotificationRow>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -225,6 +239,10 @@ export type Database = {
       suscripcion_activa: {
         Args: { p_team_id: string };
         Returns: boolean;
+      };
+      enviar_notificacion: {
+        Args: { p_email: string; p_mensaje: string };
+        Returns: void;
       };
     };
     Enums: Record<string, never>;

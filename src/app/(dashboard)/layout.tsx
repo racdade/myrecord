@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { SignOutButton } from "@/components/sign-out-button";
 import { LlankiaLogo } from "@/components/llankia-logo";
 import { BottomNav } from "@/components/bottom-nav";
+import { NotificationBell } from "@/components/notification-bell";
 import { buttonVariants } from "@/components/ui/button";
 
 export default async function DashboardLayout({
@@ -41,6 +42,7 @@ export default async function DashboardLayout({
             </nav>
           </div>
           <div className="flex items-center gap-2">
+            <NotificationBell />
             <Link
               href="/configuracion"
               aria-label={t("configuracion")}

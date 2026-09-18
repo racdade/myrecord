@@ -348,5 +348,16 @@
       "p2": "From there came the question: why should keeping track of your own work be this complicated? Llankia is the answer: an app made by someone who lives those shifts, for the thousands of people who live them every day."
     },
     "notaLegal": "Llankia is a personal hour-tracking tool. Overtime calculations are indicative and depend on each user's settings and employment contract. They do not constitute legal or labor advice."
+  },
+  "contacto": {
+    "titulo": "Contact",
+    "descripcion": "Talk to the developer, leave your suggestion",
+    "boton": "Write a message",
+    "asunto": "Llankia - Suggestion",
+    "cuerpo": "Write your message or suggestion here.\n\n—\nSent from Llankia by {email}"
+  },
+  "notificaciones": {
+    "titulo": "Notifications",
+    "vacio": "You don't have any messages yet."
   }
 }

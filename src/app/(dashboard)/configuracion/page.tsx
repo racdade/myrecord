@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
+import { esAdmin, EMAIL_ADMIN } from "@/lib/admin";
 import { SelectorTema } from "./selector-tema";
 import { SelectorFormatoHora } from "./selector-formato-hora";
 import { SelectorIdioma } from "./selector-idioma";
@@ -24,6 +25,11 @@ export default async function ConfiguracionPage() {
   const t = await getTranslations("configuracion");
   const tSobre = await getTranslations("sobreNosotros");
   const tNav = await getTranslations("nav");
+  const tContacto = await getTranslations("contacto");
+
+  const enlaceMailto = `mailto:${EMAIL_ADMIN}?subject=${encodeURIComponent(tContacto("asunto"))}&body=${encodeURIComponent(
+    tContacto("cuerpo", { email: user.email ?? "" }),
+  )}`;
 
   return (
     <div className="flex flex-col gap-6">
@@ -68,6 +74,32 @@ export default async function ConfiguracionPage() {
           </Link>
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{tContacto("titulo")}</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-3">
+          <p className="text-sm text-muted-foreground">{tContacto("descripcion")}</p>
+          <a href={enlaceMailto} className={buttonVariants({ variant: "outline", size: "sm", className: "self-start" })}>
+            {tContacto("boton")}
+          </a>
+        </CardContent>
+      </Card>
+
+      {esAdmin(user.email) && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Panel de administrador</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3">
+            <p className="text-sm text-muted-foreground">Responder mensajes de contacto.</p>
+            <Link href="/admin/mensajes" className={buttonVariants({ variant: "outline", size: "sm", className: "self-start" })}>
+              Ir al panel
+            </Link>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
