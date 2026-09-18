@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { combinarMensaje, esCumpleanosHoy, mensajeCumpleanosAlAzar } from "@/lib/mensajes-animo";
+import { PreviewDashboard, PreviewEquipo, PreviewReportes, PreviewTurnos } from "@/components/inicio-preview";
 import { version } from "../../../../package.json";
 
 export default async function InicioPage() {
@@ -37,10 +38,30 @@ export default async function InicioPage() {
       : t("saludoSinNombre");
 
   const ACCESOS_RAPIDOS = [
-    { href: "/dashboard", titulo: t("accesoDashboardTitulo"), descripcion: t("accesoDashboardDescripcion") },
-    { href: "/turnos", titulo: t("accesoTurnosTitulo"), descripcion: t("accesoTurnosDescripcion") },
-    { href: "/reportes", titulo: t("accesoReportesTitulo"), descripcion: t("accesoReportesDescripcion") },
-    { href: "/equipo", titulo: t("accesoEquipoTitulo"), descripcion: t("accesoEquipoDescripcion") },
+    {
+      href: "/dashboard",
+      titulo: t("accesoDashboardTitulo"),
+      descripcion: t("accesoDashboardDescripcion"),
+      Preview: PreviewDashboard,
+    },
+    {
+      href: "/turnos",
+      titulo: t("accesoTurnosTitulo"),
+      descripcion: t("accesoTurnosDescripcion"),
+      Preview: PreviewTurnos,
+    },
+    {
+      href: "/reportes",
+      titulo: t("accesoReportesTitulo"),
+      descripcion: t("accesoReportesDescripcion"),
+      Preview: PreviewReportes,
+    },
+    {
+      href: "/equipo",
+      titulo: t("accesoEquipoTitulo"),
+      descripcion: t("accesoEquipoDescripcion"),
+      Preview: PreviewEquipo,
+    },
   ];
 
   return (
@@ -54,11 +75,12 @@ export default async function InicioPage() {
         {ACCESOS_RAPIDOS.map((acceso) => (
           <Link key={acceso.href} href={acceso.href}>
             <Card className="h-full transition-colors hover:bg-muted/50">
-              <CardHeader>
-                <CardTitle>{acceso.titulo}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">{acceso.descripcion}</p>
+              <CardContent className="flex flex-col gap-4">
+                <acceso.Preview />
+                <div>
+                  <CardTitle>{acceso.titulo}</CardTitle>
+                  <p className="mt-1 text-sm text-muted-foreground">{acceso.descripcion}</p>
+                </div>
               </CardContent>
             </Card>
           </Link>
