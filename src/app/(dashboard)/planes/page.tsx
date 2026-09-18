@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,16 @@ export default async function PlanesPage() {
   if (!membresia || membresia.rol !== "admin") {
     return (
       <div className="flex flex-col gap-6">
+        <Card>
+          <CardContent className="flex flex-col items-center gap-3 py-10 text-center">
+            <div className="flex size-12 items-center justify-center rounded-full bg-muted">
+              <Sparkles className="size-5 text-foreground" aria-hidden="true" />
+            </div>
+            <CardTitle className="text-xl">{t("proximamenteTitulo")}</CardTitle>
+            <p className="max-w-sm text-sm text-muted-foreground">{t("proximamenteDescripcion")}</p>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle>{t("titulo")}</CardTitle>

@@ -278,6 +278,8 @@
   },
   "planes": {
     "titulo": "Plans",
+    "proximamenteTitulo": "We're working on bringing you this",
+    "proximamenteDescripcion": "Soon you'll be able to pick a plan and unlock more features for your team. In the meantime, keep using Llankia for free — we're polishing every detail to make the experience even better.",
     "personalGratisTitulo": "Personal (free)",
     "personalGratisDescripcion": "track and see only your own hours. Includes photo, text, dashboard, and (later) Google Calendar.",
     "administracionTitulo": "Management",

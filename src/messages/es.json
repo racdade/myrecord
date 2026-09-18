@@ -278,6 +278,8 @@
   },
   "planes": {
     "titulo": "Planes",
+    "proximamenteTitulo": "Estamos trabajando para traerte esto",
+    "proximamenteDescripcion": "Muy pronto vas a poder elegir un plan y desbloquear más funciones para tu equipo. Mientras tanto, sigue usando Llankia gratis — estamos puliendo cada detalle para que la experiencia sea aún mejor.",
     "personalGratisTitulo": "Personal (gratis)",
     "personalGratisDescripcion": "registra y ve solo tus propias horas. Incluye foto, texto, dashboard y (más adelante) Google Calendar.",
     "administracionTitulo": "Administración",
