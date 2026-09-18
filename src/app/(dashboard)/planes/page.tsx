@@ -14,6 +14,20 @@ function diasRestantes(fechaISO: string): number {
   return Math.max(0, Math.ceil(diff / (24 * 60 * 60 * 1000)));
 }
 
+function MensajeProximamente({ titulo, descripcion }: { titulo: string; descripcion: string }) {
+  return (
+    <Card>
+      <CardContent className="flex flex-col items-center gap-3 py-10 text-center">
+        <div className="flex size-12 items-center justify-center rounded-full bg-muted">
+          <Sparkles className="size-5 text-foreground" aria-hidden="true" />
+        </div>
+        <CardTitle className="text-xl">{titulo}</CardTitle>
+        <p className="max-w-sm text-sm text-muted-foreground">{descripcion}</p>
+      </CardContent>
+    </Card>
+  );
+}
+
 export default async function PlanesPage() {
   const supabase = await createClient();
   const {
@@ -33,15 +47,7 @@ export default async function PlanesPage() {
   if (!membresia || membresia.rol !== "admin") {
     return (
       <div className="flex flex-col gap-6">
-        <Card>
-          <CardContent className="flex flex-col items-center gap-3 py-10 text-center">
-            <div className="flex size-12 items-center justify-center rounded-full bg-muted">
-              <Sparkles className="size-5 text-foreground" aria-hidden="true" />
-            </div>
-            <CardTitle className="text-xl">{t("proximamenteTitulo")}</CardTitle>
-            <p className="max-w-sm text-sm text-muted-foreground">{t("proximamenteDescripcion")}</p>
-          </CardContent>
-        </Card>
+        <MensajeProximamente titulo={t("proximamenteTitulo")} descripcion={t("proximamenteDescripcion")} />
 
         <Card>
           <CardHeader>
@@ -84,6 +90,8 @@ export default async function PlanesPage() {
 
   return (
     <div className="flex flex-col gap-6">
+      <MensajeProximamente titulo={t("proximamenteTitulo")} descripcion={t("proximamenteDescripcion")} />
+
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>{t("facturacion", { equipo: equipo.nombre })}</CardTitle>
