@@ -30,7 +30,7 @@ export default async function DashboardLayout({
       <header className="border-b" style={{ paddingTop: "env(safe-area-inset-top)" }}>
         <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-3 p-4">
           <div className="flex flex-wrap items-center gap-6">
-            <Link href="/dashboard">
+            <Link href="/inicio">
               <LlankiaLogo />
             </Link>
             <nav className="hidden flex-wrap gap-4 text-sm font-medium sm:flex">

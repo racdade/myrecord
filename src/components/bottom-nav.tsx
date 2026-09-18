@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Clock, CreditCard, FileText, LayoutDashboard, Users } from "lucide-react";
+import { Clock, CreditCard, FileText, Home, LayoutDashboard, Users } from "lucide-react";
 
 const TABS = [
+  { href: "/inicio", key: "inicio", Icon: Home },
   { href: "/dashboard", key: "dashboard", Icon: LayoutDashboard },
   { href: "/turnos", key: "turnos", Icon: Clock },
   { href: "/reportes", key: "reportes", Icon: FileText },
