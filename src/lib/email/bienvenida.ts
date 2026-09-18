@@ -5,19 +5,21 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const REMITENTE = "Llankia <onboarding@resend.dev>";
 
+const LOGO_URL = "https://llankia.vercel.app/logo-email.png";
+
 function htmlBienvenida(nombre: string | null): string {
-  const saludo = nombre ? `Hola, ${nombre}` : "Hola";
+  const saludo = nombre ? `Hola, ${nombre}.` : "Hola.";
   return `
     <div style="font-family: -apple-system, 'Outfit', system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; color: #0A0A0A;">
-      <p style="font-size: 20px; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 24px;">Llankia</p>
-      <p style="font-size: 17px; margin: 0 0 12px;">${saludo}, ¡bienvenido a Llankia!</p>
-      <p style="font-size: 15px; line-height: 1.6; color: #444; margin: 0 0 16px;">
-        Gracias por registrarte. Llankia viene de <em>llank'ay</em>, "trabajar" en quechua:
-        tu trabajo vale, y tus horas merecen quedar registradas.
+      <img src="${LOGO_URL}" alt="Llankia" width="40" height="40" style="display: block; margin: 0 0 16px;" />
+      <p style="font-size: 26px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; margin: 0 0 20px;">
+        Sube tu horario.<br />Llankia hace las cuentas.
       </p>
+      <p style="font-size: 16px; margin: 0 0 4px;">${saludo} Bienvenido a Llankia.</p>
       <p style="font-size: 15px; line-height: 1.6; color: #444; margin: 0 0 24px;">
-        Sube la foto de tu horario o escríbelo, y Llankia se encarga de calcular tus horas
-        y tus extras por ti.
+        ¿Cuántas horas trabajaste esta semana? ¿Cuánto te corresponde por tus extras?
+        Sube la foto de tu horario o escríbelo, y Llankia te lo dice al segundo — sin que
+        sumes nada a mano.
       </p>
       <a href="https://llankia.vercel.app/inicio"
          style="display: inline-block; background: #0A0A0A; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 999px; font-size: 15px; font-weight: 500;">
