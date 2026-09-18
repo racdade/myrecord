@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Turnia",
-    short_name: "Turnia",
+    name: "Llankia",
+    short_name: "Llankia",
     description: "Registra tus horas de trabajo y horas extra.",
     start_url: "/",
     display: "standalone",

@@ -69,7 +69,7 @@ export default function LoginPage() {
             strokeLinejoin="round"
           />
         </svg>
-        <h1 className="text-2xl font-medium tracking-wide">Turnia</h1>
+        <h1 className="text-2xl font-medium tracking-wide">Llankia</h1>
         <p className="max-w-xs text-sm text-muted-foreground">{t("descripcion")}</p>
       </div>
       <Suspense

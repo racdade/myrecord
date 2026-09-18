@@ -113,7 +113,7 @@
   "configuracion": {
     "apariencia": {
       "titulo": "Appearance",
-      "descripcion": "Choose how Turnia looks on this device.",
+      "descripcion": "Choose how Llankia looks on this device.",
       "claro": "Light",
       "oscuro": "Dark",
       "sistema": "System"

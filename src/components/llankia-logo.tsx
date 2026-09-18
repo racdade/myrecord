@@ -1,4 +1,4 @@
-export function TurniaLogo({ className }: { className?: string }) {
+export function LlankiaLogo({ className }: { className?: string }) {
   return (
     <span className={`inline-flex items-center gap-2 ${className ?? ""}`}>
       <svg viewBox="0 0 48 48" width="22" height="22" aria-hidden="true" className="shrink-0">
@@ -19,7 +19,7 @@ export function TurniaLogo({ className }: { className?: string }) {
           strokeLinejoin="round"
         />
       </svg>
-      <span className="text-lg font-medium tracking-wide">Turnia</span>
+      <span className="text-lg font-medium tracking-wide">Llankia</span>
     </span>
   );
 }

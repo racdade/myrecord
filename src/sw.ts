@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-// Service worker de Turnia. Solo precachea el puñado de íconos estáticos de
+// Service worker de Llankia. Solo precachea el puñado de íconos estáticos de
 // public/icons — todo lo demás (páginas, /api, Server Actions) se deja pasar
 // directo a la red sin interceptar. Esta es una app con datos dinámicos por
 // usuario (turnos, autenticación); cachear agresivamente esas rutas es más

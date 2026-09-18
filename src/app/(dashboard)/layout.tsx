@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { SignOutButton } from "@/components/sign-out-button";
-import { TurniaLogo } from "@/components/turnia-logo";
+import { LlankiaLogo } from "@/components/llankia-logo";
 import { BottomNav } from "@/components/bottom-nav";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -30,7 +30,7 @@ export default async function DashboardLayout({
         <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-3 p-4">
           <div className="flex flex-wrap items-center gap-6">
             <Link href="/">
-              <TurniaLogo />
+              <LlankiaLogo />
             </Link>
             <nav className="hidden flex-wrap gap-4 text-sm font-medium sm:flex">
               <Link href="/dashboard">{t("dashboard")}</Link>

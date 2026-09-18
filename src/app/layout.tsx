@@ -1,15 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Geist_Mono, Hanken_Grotesk } from "next/font/google";
+import { Geist_Mono, Outfit } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
 import "./globals.css";
 
-const hankenGrotesk = Hanken_Grotesk({
+const outfit = Outfit({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["300", "400", "500", "600"],
 });
 
 const geistMono = Geist_Mono({
@@ -18,12 +18,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Turnia",
+  title: "Llankia",
   description: "Registra tus horas de trabajo y horas extra.",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Turnia",
+    title: "Llankia",
   },
 };
 
@@ -45,7 +45,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang={locale}
       suppressHydrationWarning
-      className={`${hankenGrotesk.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${outfit.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <NextIntlClientProvider messages={messages}>
