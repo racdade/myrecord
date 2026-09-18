@@ -15,10 +15,12 @@ function htmlBienvenida(nombre: string | null): string {
       <p style="font-size: 26px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; margin: 0 0 20px;">
         Sube tu horario.<br />Llankia hace las cuentas.
       </p>
-      <p style="font-size: 16px; margin: 0 0 4px;">${saludo} Bienvenido a Llankia.</p>
+      <p style="font-size: 16px; margin: 0 0 20px;">${saludo} Bienvenido a Llankia.</p>
+      <p style="font-size: 15px; color: #444; margin: 0 0 12px;">¿Cuántas horas trabajaste esta semana?</p>
+      <p style="font-size: 15px; color: #444; margin: 0 0 12px;">¿Cuántas fueron extra?</p>
+      <p style="font-size: 15px; color: #444; margin: 0 0 20px;">¿Cuánto te corresponde por ellas?</p>
       <p style="font-size: 15px; line-height: 1.6; color: #444; margin: 0 0 24px;">
-        ¿Cuántas horas trabajaste esta semana? ¿Cuánto te corresponde por tus extras?
-        Sube la foto de tu horario o escríbelo, y Llankia te lo dice al segundo — sin que
+        Sube la foto de tu horario o escríbelo, y Llankia te lo hace en un segundo sin que
         sumes nada a mano.
       </p>
       <a href="https://llankia.vercel.app/inicio"
