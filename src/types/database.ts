@@ -28,6 +28,7 @@ export type ProfileRow = {
   admin_habilitado: boolean;
   fecha_nacimiento: string | null;
   formato_hora: FormatoHoraDB;
+  bienvenida_enviada: boolean;
   created_at: string;
   updated_at: string;
 };

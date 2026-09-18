@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { cifrar } from "@/lib/calendar/crypto";
+import { enviarCorreoBienvenida } from "@/lib/email/bienvenida";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -21,6 +22,20 @@ export async function GET(request: Request) {
           .from("google_connections")
           .upsert({ user_id: data.user.id, refresh_token: cifrar(refreshToken) });
       }
+
+      if (data.user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("nombre, email, bienvenida_enviada")
+          .eq("id", data.user.id)
+          .single();
+
+        if (profile && !profile.bienvenida_enviada && (profile.email ?? data.user.email)) {
+          await enviarCorreoBienvenida(profile.email ?? data.user.email!, profile.nombre);
+          await supabase.from("profiles").update({ bienvenida_enviada: true }).eq("id", data.user.id);
+        }
+      }
+
       return NextResponse.redirect(`${origin}${next}`);
     }
     console.error("[auth/callback] exchangeCodeForSession error:", error.message, error.status, error.code);
