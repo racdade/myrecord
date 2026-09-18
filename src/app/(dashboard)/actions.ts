@@ -68,6 +68,6 @@ export async function actualizarAjustes(formData: FormData) {
   if (errorPerfil) throw new Error(errorPerfil.message);
   if (errorReglas) throw new Error(errorReglas.message);
 
-  revalidatePath("/");
+  revalidatePath("/inicio");
   revalidatePath("/dashboard");
 }

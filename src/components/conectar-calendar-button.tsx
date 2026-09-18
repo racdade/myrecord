@@ -15,7 +15,7 @@ export function ConectarCalendarButton() {
     setError(null);
     try {
       const supabase = createClient();
-      const params = new URLSearchParams({ next: "/", calendar: "1" });
+      const params = new URLSearchParams({ next: "/dashboard", calendar: "1" });
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {

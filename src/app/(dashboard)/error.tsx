@@ -14,5 +14,5 @@ export default function DashboardError({
     console.error(error);
   }, [error]);
 
-  return <ErrorState reset={reset} volverHref="/" />;
+  return <ErrorState reset={reset} volverHref="/inicio" />;
 }

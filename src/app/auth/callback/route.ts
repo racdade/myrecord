@@ -5,7 +5,7 @@ import { cifrar } from "@/lib/calendar/crypto";
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/dashboard";
+  const next = searchParams.get("next") ?? "/inicio";
   const conectandoCalendar = searchParams.get("calendar") === "1";
 
   if (code) {

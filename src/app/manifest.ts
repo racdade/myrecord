@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Llankia",
     short_name: "Llankia",
     description: "Registra tus horas de trabajo y horas extra.",
-    start_url: "/",
+    start_url: "/inicio",
     display: "standalone",
     background_color: "#FFFFFF",
     theme_color: "#0A0A0A",
