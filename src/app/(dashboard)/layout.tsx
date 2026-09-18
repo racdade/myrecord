@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { SignOutButton } from "@/components/sign-out-button";
 import { LlankiaLogo } from "@/components/llankia-logo";
 import { BottomNav } from "@/components/bottom-nav";
+import { DesktopNav } from "@/components/desktop-nav";
 import { NotificationBell } from "@/components/notification-bell";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -33,13 +34,7 @@ export default async function DashboardLayout({
             <Link href="/inicio">
               <LlankiaLogo />
             </Link>
-            <nav className="hidden flex-wrap gap-4 text-sm font-medium sm:flex">
-              <Link href="/dashboard">{t("dashboard")}</Link>
-              <Link href="/turnos">{t("turnos")}</Link>
-              <Link href="/reportes">{t("reportes")}</Link>
-              <Link href="/equipo">{t("equipo")}</Link>
-              <Link href="/planes">{t("planes")}</Link>
-            </nav>
+            <DesktopNav />
           </div>
           <div className="flex items-center gap-2">
             <NotificationBell />

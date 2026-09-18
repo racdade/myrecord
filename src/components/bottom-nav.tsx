@@ -36,6 +36,7 @@ export function BottomNav() {
             >
               <Icon className="size-5" aria-hidden="true" />
               {t(key)}
+              <span className={`mt-0.5 h-0.5 w-6 rounded-full ${activo ? "bg-foreground" : "bg-transparent"}`} />
             </Link>
           );
         })}
