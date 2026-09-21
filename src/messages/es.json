@@ -364,5 +364,226 @@
   "notificaciones": {
     "titulo": "Notificaciones",
     "vacio": "Todavía no tienes mensajes."
+  },
+  "marketing": {
+    "diasSemana": ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+    "meta": {
+      "titulo": "Llankia — Tus horas, claras.",
+      "descripcion": "Registra tus horas de trabajo y tus horas extra en segundos. Sube la foto de tu horario, la IA la lee, tú confirmas y Llankia calcula todo por ti.",
+      "descripcionCorta": "Registra tus horas de trabajo y tus horas extra en segundos."
+    },
+    "nav": {
+      "comoFunciona": "Cómo funciona",
+      "precios": "Precios",
+      "nosotros": "Nosotros",
+      "empezarGratis": "Empezar gratis",
+      "empezar": "Empezar"
+    },
+    "hero": {
+      "titulo": "Tus horas, claras.",
+      "subtitulo": "Registra tus horas y tus extras en segundos.",
+      "ctaPrincipal": "Empezar gratis",
+      "ctaSecundario": "Ver cómo funciona",
+      "estaSemana": "ESTA SEMANA",
+      "resumenHoras": "38 h + 4 h 30 extra",
+      "horasNormales": "Horas normales",
+      "horasExtra": "Horas extra",
+      "pagoEstimado": "Pago estimado"
+    },
+    "problema": {
+      "parte1": "Tu horario cambia cada semana.",
+      "parte2": "Tus horas extra terminan en una libreta."
+    },
+    "comoFunciona": {
+      "pasoLabel": "PASO",
+      "paso1": {
+        "titulo": "Sube la foto de tu horario.",
+        "bodyDesktop": "La foto del papel pegado en la pared, la captura del grupo o tu propio texto. La IA lo lee y lo convierte en turnos.",
+        "bodyMobile": "La IA lo lee y lo convierte en turnos.",
+        "archivo": "Horario_semana.jpg",
+        "oEscribe": "o escribe tu horario",
+        "horarioEjemplo": "Lun a vie 14:00–22:00, sáb 8:00–14:00",
+        "botonAnalizar": "Analizar"
+      },
+      "paso2": {
+        "titulo": "Confirma tus turnos.",
+        "bodyDesktop": "Revisas, corriges lo que haga falta y listo. Tú siempre tienes la última palabra.",
+        "bodyMobile": "Revisas, corriges y listo. Tú tienes la última palabra.",
+        "turnosDetectados": "6 turnos detectados",
+        "botonConfirmar": "Confirmar semana",
+        "editarTurno": "Editar un turno",
+        "filas": [
+          { "fecha": "Lun 14", "rango": "14:00–22:00", "horas": "8 h", "confirmado": true },
+          { "fecha": "Mar 15", "rango": "14:00–23:30", "horas": "8 h + 1 h 30 extra", "confirmado": true },
+          { "fecha": "Mié 16", "rango": "10:00–16:00", "horas": "6 h", "confirmado": false },
+          { "fecha": "Jue 17", "rango": "14:00–22:00", "horas": "8 h", "confirmado": false },
+          { "fecha": "Vie 18", "rango": "14:00–22:00", "horas": "8 h", "confirmado": false }
+        ]
+      },
+      "paso3": {
+        "titulo": "Mira tus horas y tus extras.",
+        "bodyDesktop": "Cada día contado, cada extra separada. Sin sumas a mano al final del mes.",
+        "bodyMobile": "Cada día contado, cada extra separada.",
+        "totalDelMes": "TOTAL DEL MES",
+        "totalHoras": "164 h 30",
+        "horasNormales": "Horas normales",
+        "horasExtra": "Horas extra",
+        "semanas": [
+          { "semana": "Sem 1", "horas": "38 h", "extra": "2 h" },
+          { "semana": "Sem 2", "horas": "40 h", "extra": "3 h" },
+          { "semana": "Sem 3", "horas": "39 h", "extra": "3 h 30" },
+          { "semana": "Sem 4", "horas": "35 h", "extra": "4 h" }
+        ]
+      }
+    },
+    "dashboardShowcase": {
+      "titulo": "Todo tu mes, de un vistazo.",
+      "subtitulo": "El dashboard de Llankia en el navegador o en el celular.",
+      "mes": "Septiembre 2026",
+      "semana": "Semana 16 – 22",
+      "horasNormales": "Horas normales",
+      "horasExtra": "Horas extra",
+      "pagoEstimado": "Pago estimado"
+    },
+    "calendarSync": {
+      "titulo": "Tus turnos, en tu calendario.",
+      "subtituloDesktop": "Confirmas una vez y tus turnos aparecen en Google Calendar.",
+      "subtituloMobile": "Confirmas una vez y aparecen en Google Calendar.",
+      "llankiaLabel": "LLANKIA",
+      "googleLabel": "GOOGLE CALENDAR",
+      "turnos": [
+        { "fecha": "Lun 16", "rango": "14:00–22:00" },
+        { "fecha": "Mar 17", "rango": "14:00–23:30" },
+        { "fecha": "Mié 18", "rango": "10:00–16:00" }
+      ]
+    },
+    "equipos": {
+      "titulo": "¿Administras un equipo? Ve las horas de todos en un solo lugar.",
+      "persona": "PERSONA",
+      "horas": "HORAS",
+      "extras": "EXTRAS"
+    },
+    "precios": {
+      "titulo": "Precios.",
+      "subtitulo": "Empieza gratis. Paga solo si administras un equipo.",
+      "personal": {
+        "nombre": "Personal",
+        "precio": "Gratis",
+        "features": ["Turnos ilimitados", "Lectura de horarios con IA", "Horas extra separadas", "Google Calendar"],
+        "cta": "Empezar gratis"
+      },
+      "administracion": {
+        "nombre": "Administración",
+        "precio": "Para equipos",
+        "features": ["Todo lo del plan personal", "Horas de todo el equipo", "Reportes por mes", "Exportar a Excel"],
+        "cta": "Hablar con nosotros"
+      }
+    },
+    "elNombre": {
+      "frase1": "Llankia nace de <em>llank'ay</em>: trabajar.",
+      "frase2": "Un reloj que se cierra con un check: tiempo registrado, semana resuelta."
+    },
+    "cierre": {
+      "titulo": "Empieza hoy. Es gratis.",
+      "cta": "Empezar gratis"
+    },
+    "footer": {
+      "copyright": "© {anio} Llankia. Todos los derechos reservados.",
+      "disclaimer": "Llankia es una herramienta de registro personal de horas. Los cálculos de horas extra son referenciales y no constituyen asesoría legal ni laboral.",
+      "masInfo": "Más info",
+      "hechoEnLima": "Hecho en Lima 🇵🇪",
+      "sobreNosotros": "Sobre nosotros",
+      "privacidad": "Privacidad",
+      "terminos": "Términos",
+      "contacto": "Contacto"
+    }
+  },
+  "privacidad": {
+    "titulo": "Política de privacidad",
+    "actualizado": "Última actualización: {fecha}",
+    "volverInicio": "Volver al inicio",
+    "intro": "Llankia es una app para registrar horas de trabajo y horas extra. Esta política explica qué datos recopilamos, para qué los usamos, con quién los compartimos y cómo puedes controlarlos. La escribimos para que se entienda de verdad, no para llenar espacio.",
+    "s1titulo": "1. Quién es responsable de tus datos",
+    "s1cuerpo": "Llankia es operada por su desarrollador, con contacto en <email></email>. Cualquier consulta sobre tus datos o esta política puedes escribirla ahí.",
+    "s2titulo": "2. Qué datos recopilamos",
+    "s2p1": "De tu cuenta: nombre, correo electrónico y foto de perfil, que obtenemos de Google cuando inicias sesión.",
+    "s2p2": "De tu perfil: fecha de nacimiento (opcional, solo para saludarte en tu cumpleaños), tarifa por hora, moneda, zona horaria, idioma y formato de hora que elijas.",
+    "s2p3": "De tus horas de trabajo: los turnos que registras (fecha, horario, tipo, notas) y, si subes una foto o texto de tu horario para que la IA lo lea, esa foto o texto y los turnos que resultan de leerla.",
+    "s2p4": "De Google Calendar: si decides conectar tu cuenta, guardamos un token de acceso cifrado para crear y actualizar eventos en tu calendario con tus turnos. No leemos el resto de tu calendario.",
+    "s2p5": "De equipos: si administras o perteneces a un equipo, el nombre del equipo, quién lo integra y las horas de sus miembros (visibles solo para el administrador del equipo).",
+    "s3titulo": "3. Para qué usamos tus datos",
+    "s3items": [
+      "Calcular tus horas trabajadas, horas extra y pago estimado.",
+      "Leer la foto o el texto de tu horario y convertirlo en turnos (con IA).",
+      "Sincronizar tus turnos con Google Calendar, si lo activaste.",
+      "Mostrarte reportes y tendencias de tus horas.",
+      "Si administras un equipo, mostrarte las horas de sus miembros y gestionar la facturación del plan.",
+      "Mandarte el correo de bienvenida cuando te registras.",
+      "Notificarte dentro de la app si el equipo de Llankia te responde un mensaje."
+    ],
+    "s3final": "No usamos tus datos para publicidad, ni los vendemos a nadie.",
+    "s4titulo": "4. Con quién compartimos datos",
+    "s4intro": "No compartimos tus datos con terceros para sus propios fines. Sí usamos estos proveedores para que Llankia funcione, cada uno procesando solo lo necesario para su función:",
+    "s4supabase": "Supabase — base de datos, autenticación y almacenamiento de fotos.",
+    "s4google": "Google — inicio de sesión y sincronización con Google Calendar, según lo que tú autorices.",
+    "s4anthropic": "Anthropic (Claude) — lee la foto o el texto de tu horario para convertirlo en turnos. Esas fotos no se usan para entrenar modelos de IA.",
+    "s4resend": "Resend — envía el correo de bienvenida.",
+    "s4vercel": "Vercel — aloja la aplicación.",
+    "s5titulo": "5. Uso de datos de Google",
+    "s5cuerpo": "El uso y la transferencia a cualquier otra aplicación de la información que Llankia reciba desde las APIs de Google se ajustará a la <enlace>Política de Datos de Usuario de los Servicios de API de Google</enlace>, incluidos los requisitos de Uso Limitado.",
+    "s6titulo": "6. Fotos de horarios",
+    "s6cuerpo": "Las fotos que subes para registrar tu horario se guardan en un almacenamiento privado: solo tú puedes verlas. Se usan únicamente para que la IA lea tu horario; puedes borrarlas cuando quieras.",
+    "s7titulo": "7. Cuánto tiempo guardamos tus datos",
+    "s7cuerpo": "Guardamos tus datos mientras tu cuenta esté activa. Si quieres borrar tu cuenta y toda tu información, escríbenos a <email></email> y lo hacemos en un plazo razonable. Estamos trabajando en que puedas hacerlo tú mismo desde la app.",
+    "s8titulo": "8. Seguridad",
+    "s8cuerpo": "Cada persona solo puede ver y modificar sus propios datos (turnos, fotos, perfil); un administrador de equipo solo ve los datos de su equipo. Esto se aplica directamente en la base de datos, no solo escondiendo botones en la pantalla. El token de Google Calendar se guarda cifrado.",
+    "s9titulo": "9. Tus derechos",
+    "s9cuerpo": "Puedes pedirnos acceder a tus datos, corregirlos o borrarlos en cualquier momento, escribiendo a <email></email>. También puedes desconectar Google Calendar desde el Dashboard cuando quieras.",
+    "s10titulo": "10. Menores de edad",
+    "s10cuerpo": "Llankia no está dirigida a menores de 13 años, y no recopilamos datos a sabiendas de ellos.",
+    "s11titulo": "11. Cambios a esta política",
+    "s11cuerpo": "Si cambiamos esta política de forma importante, lo vamos a anunciar dentro de la app. La fecha de arriba siempre indica la última actualización.",
+    "s12titulo": "12. Contacto",
+    "s12cuerpo": "¿Preguntas sobre tus datos o esta política? Escríbenos a <email></email>."
+  },
+  "terminos": {
+    "titulo": "Términos de servicio",
+    "actualizado": "Última actualización: {fecha}",
+    "volverInicio": "Volver al inicio",
+    "intro": "Estos términos explican las reglas para usar Llankia. Al crear una cuenta o usar la app, los aceptas. Si tienes dudas sobre algo, escríbenos antes de usar la app.",
+    "s1titulo": "1. Qué es Llankia",
+    "s1cuerpo": "Llankia es una herramienta para registrar tus horas de trabajo y tus horas extra, leer tu horario a partir de una foto o texto, ver reportes de tus horas, y —si lo activas— sincronizar tus turnos con Google Calendar. Si administras un equipo, también te deja ver las horas de sus miembros.",
+    "s2titulo": "2. Tu cuenta",
+    "s2cuerpo": "Entras a Llankia con tu cuenta de Google. Eres responsable de mantener el acceso a esa cuenta seguro; cualquier actividad que ocurra desde tu cuenta se considera hecha por ti. Debes darnos información real (tu nombre, correo) al usar la app.",
+    "s3titulo": "3. Uso permitido",
+    "s3intro": "Al usar Llankia, te comprometes a:",
+    "s3items": [
+      "Usar la app solo para registrar tus propias horas de trabajo (o las de tu equipo, si lo administras).",
+      "No subir fotos, texto o contenido que no sea tuyo o que viole derechos de terceros.",
+      "No intentar acceder a datos de otras personas sin autorización.",
+      "No usar la app para actividades ilegales o para dañar su funcionamiento."
+    ],
+    "s4titulo": "4. Los cálculos de horas no son asesoría legal",
+    "s4cuerpo": "Llankia es una herramienta de registro personal de horas. Los cálculos de horas extra son referenciales y dependen de la configuración que elija cada usuario y de su contrato de trabajo. No constituyen asesoría legal ni laboral. Si tienes dudas sobre tus derechos laborales, consulta con un profesional o con la autoridad de trabajo de tu país.",
+    "s5titulo": "5. Tu contenido",
+    "s5cuerpo": "Las fotos, textos y datos que subes siguen siendo tuyos. Nos das permiso para procesarlos (por ejemplo, mandar la foto de tu horario a nuestro proveedor de IA para leerla) únicamente para darte el servicio de Llankia, según se describe en la <enlace>política de privacidad</enlace>.",
+    "s6titulo": "6. Equipos y administradores",
+    "s6cuerpo": "Si creas o administras un equipo, puedes ver las horas de sus miembros e invitar o quitar personas. Eres responsable de tener el consentimiento de esas personas para administrar su información dentro de Llankia.",
+    "s7titulo": "7. Planes y pagos",
+    "s7cuerpo": "Llankia tiene un plan personal gratuito. El plan de administración de equipos está en construcción: por ahora, cualquier cobro dentro de la app es simulado y no representa una transacción real. Cuando el cobro sea real, estos términos se van a actualizar y te lo vamos a avisar antes de que se active.",
+    "s8titulo": "8. Integraciones de terceros",
+    "s8cuerpo": "Si conectas Google Calendar, ese servicio tiene sus propios términos, independientes de los nuestros. No somos responsables de cómo funcionan esos servicios externos.",
+    "s9titulo": "9. Propiedad de Llankia",
+    "s9cuerpo": "El nombre \"Llankia\", el logo, el diseño y el código de la aplicación son propiedad de su desarrollador. No puedes copiar, revender ni distribuir la app sin permiso.",
+    "s10titulo": "10. Cancelar tu cuenta",
+    "s10cuerpo": "Puedes dejar de usar Llankia cuando quieras. Para borrar tu cuenta y tus datos, escríbenos a <email></email>. También podemos suspender o cerrar una cuenta si detectamos un uso indebido de la app.",
+    "s11titulo": "11. Sin garantías",
+    "s11cuerpo": "Llankia todavía está en desarrollo activo. Hacemos lo posible para que funcione bien, pero la ofrecemos \"tal cual\", sin garantizar que esté libre de errores en todo momento. No somos responsables por pérdidas que resulten de un mal funcionamiento de la app, más allá de lo que la ley exija.",
+    "s12titulo": "12. Cambios a estos términos",
+    "s12cuerpo": "Si hacemos cambios importantes a estos términos, lo vamos a anunciar dentro de la app. La fecha de arriba siempre indica la última actualización.",
+    "s13titulo": "13. Ley aplicable",
+    "s13cuerpo": "Llankia se desarrolla en Lima, Perú, y estos términos se interpretan bajo las leyes peruanas.",
+    "s14titulo": "14. Contacto",
+    "s14cuerpo": "¿Preguntas sobre estos términos? Escríbenos a <email></email>."
   }
 }

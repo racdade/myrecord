@@ -364,5 +364,226 @@
   "notificaciones": {
     "titulo": "Notifications",
     "vacio": "You don't have any messages yet."
+  },
+  "marketing": {
+    "diasSemana": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    "meta": {
+      "titulo": "Llankia — Your hours, clear.",
+      "descripcion": "Log your work hours and overtime in seconds. Upload a photo of your schedule, the AI reads it, you confirm, and Llankia does the math for you.",
+      "descripcionCorta": "Log your work hours and overtime in seconds."
+    },
+    "nav": {
+      "comoFunciona": "How it works",
+      "precios": "Pricing",
+      "nosotros": "About us",
+      "empezarGratis": "Start for free",
+      "empezar": "Start"
+    },
+    "hero": {
+      "titulo": "Your hours, clear.",
+      "subtitulo": "Log your hours and overtime in seconds.",
+      "ctaPrincipal": "Start for free",
+      "ctaSecundario": "See how it works",
+      "estaSemana": "THIS WEEK",
+      "resumenHoras": "38h + 4h 30m overtime",
+      "horasNormales": "Regular hours",
+      "horasExtra": "Overtime",
+      "pagoEstimado": "Estimated pay"
+    },
+    "problema": {
+      "parte1": "Your schedule changes every week.",
+      "parte2": "Your overtime ends up in a notebook."
+    },
+    "comoFunciona": {
+      "pasoLabel": "STEP",
+      "paso1": {
+        "titulo": "Upload a photo of your schedule.",
+        "bodyDesktop": "The photo of the paper taped to the wall, the screenshot from the group chat, or your own text. The AI reads it and turns it into shifts.",
+        "bodyMobile": "The AI reads it and turns it into shifts.",
+        "archivo": "Weekly_schedule.jpg",
+        "oEscribe": "or type your schedule",
+        "horarioEjemplo": "Mon to Fri 2:00–10:00pm, Sat 8:00am–2:00pm",
+        "botonAnalizar": "Analyze"
+      },
+      "paso2": {
+        "titulo": "Confirm your shifts.",
+        "bodyDesktop": "You review, fix anything that's off, and you're done. You always have the final say.",
+        "bodyMobile": "You review, fix anything, and you're done. You have the final say.",
+        "turnosDetectados": "6 shifts detected",
+        "botonConfirmar": "Confirm week",
+        "editarTurno": "Edit a shift",
+        "filas": [
+          { "fecha": "Mon 14", "rango": "2:00–10:00pm", "horas": "8h", "confirmado": true },
+          { "fecha": "Tue 15", "rango": "2:00–11:30pm", "horas": "8h + 1h 30m overtime", "confirmado": true },
+          { "fecha": "Wed 16", "rango": "10:00am–4:00pm", "horas": "6h", "confirmado": false },
+          { "fecha": "Thu 17", "rango": "2:00–10:00pm", "horas": "8h", "confirmado": false },
+          { "fecha": "Fri 18", "rango": "2:00–10:00pm", "horas": "8h", "confirmado": false }
+        ]
+      },
+      "paso3": {
+        "titulo": "See your hours and your overtime.",
+        "bodyDesktop": "Every day counted, every overtime hour separated. No hand-adding at the end of the month.",
+        "bodyMobile": "Every day counted, every overtime hour separated.",
+        "totalDelMes": "MONTH TOTAL",
+        "totalHoras": "164h 30m",
+        "horasNormales": "Regular hours",
+        "horasExtra": "Overtime",
+        "semanas": [
+          { "semana": "Week 1", "horas": "38h", "extra": "2h" },
+          { "semana": "Week 2", "horas": "40h", "extra": "3h" },
+          { "semana": "Week 3", "horas": "39h", "extra": "3h 30m" },
+          { "semana": "Week 4", "horas": "35h", "extra": "4h" }
+        ]
+      }
+    },
+    "dashboardShowcase": {
+      "titulo": "Your whole month, at a glance.",
+      "subtitulo": "Llankia's dashboard, in your browser or on your phone.",
+      "mes": "September 2026",
+      "semana": "Week of the 16th – 22nd",
+      "horasNormales": "Regular hours",
+      "horasExtra": "Overtime",
+      "pagoEstimado": "Estimated pay"
+    },
+    "calendarSync": {
+      "titulo": "Your shifts, on your calendar.",
+      "subtituloDesktop": "Confirm once and your shifts show up on Google Calendar.",
+      "subtituloMobile": "Confirm once and they show up on Google Calendar.",
+      "llankiaLabel": "LLANKIA",
+      "googleLabel": "GOOGLE CALENDAR",
+      "turnos": [
+        { "fecha": "Mon 16", "rango": "2:00–10:00pm" },
+        { "fecha": "Tue 17", "rango": "2:00–11:30pm" },
+        { "fecha": "Wed 18", "rango": "10:00am–4:00pm" }
+      ]
+    },
+    "equipos": {
+      "titulo": "Manage a team? See everyone's hours in one place.",
+      "persona": "PERSON",
+      "horas": "HOURS",
+      "extras": "OVERTIME"
+    },
+    "precios": {
+      "titulo": "Pricing.",
+      "subtitulo": "Start for free. Pay only if you manage a team.",
+      "personal": {
+        "nombre": "Personal",
+        "precio": "Free",
+        "features": ["Unlimited shifts", "AI schedule reading", "Overtime tracked separately", "Google Calendar"],
+        "cta": "Start for free"
+      },
+      "administracion": {
+        "nombre": "Management",
+        "precio": "For teams",
+        "features": ["Everything in Personal", "Hours for your whole team", "Monthly reports", "Export to Excel"],
+        "cta": "Talk to us"
+      }
+    },
+    "elNombre": {
+      "frase1": "Llankia comes from <em>llank'ay</em>: to work.",
+      "frase2": "A clock that closes into a checkmark: time recorded, week resolved."
+    },
+    "cierre": {
+      "titulo": "Start today. It's free.",
+      "cta": "Start for free"
+    },
+    "footer": {
+      "copyright": "© {anio} Llankia. All rights reserved.",
+      "disclaimer": "Llankia is a personal hour-tracking tool. Overtime calculations are indicative and do not constitute legal or labor advice.",
+      "masInfo": "Learn more",
+      "hechoEnLima": "Made in Lima 🇵🇪",
+      "sobreNosotros": "About us",
+      "privacidad": "Privacy",
+      "terminos": "Terms",
+      "contacto": "Contact"
+    }
+  },
+  "privacidad": {
+    "titulo": "Privacy policy",
+    "actualizado": "Last updated: {fecha}",
+    "volverInicio": "Back to home",
+    "intro": "Llankia is an app for logging work hours and overtime. This policy explains what data we collect, what we use it for, who we share it with, and how you can control it. We wrote it to actually be understood, not to fill space.",
+    "s1titulo": "1. Who's responsible for your data",
+    "s1cuerpo": "Llankia is operated by its developer, reachable at <email></email>. Any question about your data or this policy can be sent there.",
+    "s2titulo": "2. What data we collect",
+    "s2p1": "From your account: name, email address, and profile photo, which we get from Google when you sign in.",
+    "s2p2": "From your profile: birthdate (optional, only to greet you on your birthday), hourly rate, currency, timezone, language, and hour format you choose.",
+    "s2p3": "From your work hours: the shifts you log (date, schedule, type, notes) and, if you upload a photo or text of your schedule for the AI to read, that photo or text and the shifts that result from reading it.",
+    "s2p4": "From Google Calendar: if you connect your account, we store an encrypted access token to create and update events on your calendar with your shifts. We don't read the rest of your calendar.",
+    "s2p5": "From teams: if you manage or belong to a team, the team's name, who's on it, and its members' hours (visible only to the team's admin).",
+    "s3titulo": "3. What we use your data for",
+    "s3items": [
+      "Calculating your worked hours, overtime, and estimated pay.",
+      "Reading a photo or text of your schedule and turning it into shifts (with AI).",
+      "Syncing your shifts to Google Calendar, if you turned that on.",
+      "Showing you reports and trends for your hours.",
+      "If you manage a team, showing you its members' hours and managing plan billing.",
+      "Sending you the welcome email when you sign up.",
+      "Notifying you in the app if the Llankia team replies to a message."
+    ],
+    "s3final": "We don't use your data for advertising, and we don't sell it to anyone.",
+    "s4titulo": "4. Who we share data with",
+    "s4intro": "We don't share your data with third parties for their own purposes. We do use these providers to make Llankia work, each one processing only what it needs for its job:",
+    "s4supabase": "Supabase — database, authentication, and photo storage.",
+    "s4google": "Google — sign-in and Google Calendar sync, based on what you authorize.",
+    "s4anthropic": "Anthropic (Claude) — reads the photo or text of your schedule to turn it into shifts. Those photos aren't used to train AI models.",
+    "s4resend": "Resend — sends the welcome email.",
+    "s4vercel": "Vercel — hosts the application.",
+    "s5titulo": "5. Use of Google data",
+    "s5cuerpo": "Llankia's use and transfer to any other app of information received from Google APIs will adhere to the <enlace>Google API Services User Data Policy</enlace>, including the Limited Use requirements.",
+    "s6titulo": "6. Schedule photos",
+    "s6cuerpo": "Photos you upload to log your schedule are stored in private storage: only you can see them. They're used solely so the AI can read your schedule; you can delete them whenever you want.",
+    "s7titulo": "7. How long we keep your data",
+    "s7cuerpo": "We keep your data while your account is active. If you want to delete your account and all your information, write to us at <email></email> and we'll do it within a reasonable time. We're working on letting you do this yourself from the app.",
+    "s8titulo": "8. Security",
+    "s8cuerpo": "Each person can only see and change their own data (shifts, photos, profile); a team admin only sees their team's data. This is enforced directly in the database, not just by hiding buttons on screen. Your Google Calendar token is stored encrypted.",
+    "s9titulo": "9. Your rights",
+    "s9cuerpo": "You can ask us to access, correct, or delete your data at any time by writing to <email></email>. You can also disconnect Google Calendar from the Dashboard whenever you want.",
+    "s10titulo": "10. Children's privacy",
+    "s10cuerpo": "Llankia isn't directed at children under 13, and we don't knowingly collect their data.",
+    "s11titulo": "11. Changes to this policy",
+    "s11cuerpo": "If we make important changes to this policy, we'll announce it inside the app. The date above always shows the last update.",
+    "s12titulo": "12. Contact",
+    "s12cuerpo": "Questions about your data or this policy? Write to us at <email></email>."
+  },
+  "terminos": {
+    "titulo": "Terms of service",
+    "actualizado": "Last updated: {fecha}",
+    "volverInicio": "Back to home",
+    "intro": "These terms explain the rules for using Llankia. By creating an account or using the app, you accept them. If you have questions about anything, write to us before using the app.",
+    "s1titulo": "1. What Llankia is",
+    "s1cuerpo": "Llankia is a tool for logging your work hours and overtime, reading your schedule from a photo or text, viewing reports of your hours, and —if you turn it on— syncing your shifts with Google Calendar. If you manage a team, it also lets you see its members' hours.",
+    "s2titulo": "2. Your account",
+    "s2cuerpo": "You sign in to Llankia with your Google account. You're responsible for keeping access to that account secure; any activity from your account is considered done by you. You must give us real information (your name, email) when using the app.",
+    "s3titulo": "3. Acceptable use",
+    "s3intro": "By using Llankia, you agree to:",
+    "s3items": [
+      "Use the app only to log your own work hours (or your team's, if you manage one).",
+      "Not upload photos, text, or content that isn't yours or that violates a third party's rights.",
+      "Not attempt to access other people's data without authorization.",
+      "Not use the app for illegal activities or to damage how it works."
+    ],
+    "s4titulo": "4. Hour calculations aren't legal advice",
+    "s4cuerpo": "Llankia is a personal hour-tracking tool. Overtime calculations are indicative and depend on the settings each user chooses and their employment contract. They don't constitute legal or labor advice. If you have questions about your labor rights, consult a professional or your country's labor authority.",
+    "s5titulo": "5. Your content",
+    "s5cuerpo": "Photos, text, and data you upload remain yours. You give us permission to process them (for example, sending your schedule photo to our AI provider to read it) solely to provide you the Llankia service, as described in the <enlace>privacy policy</enlace>.",
+    "s6titulo": "6. Teams and admins",
+    "s6cuerpo": "If you create or manage a team, you can see its members' hours and invite or remove people. You're responsible for having the consent of those people to manage their information within Llankia.",
+    "s7titulo": "7. Plans and payments",
+    "s7cuerpo": "Llankia has a free personal plan. The team management plan is under construction: for now, any charge inside the app is simulated and doesn't represent a real transaction. When billing becomes real, these terms will be updated and we'll let you know before it's turned on.",
+    "s8titulo": "8. Third-party integrations",
+    "s8cuerpo": "If you connect Google Calendar, that service has its own terms, independent of ours. We're not responsible for how those external services work.",
+    "s9titulo": "9. Llankia's ownership",
+    "s9cuerpo": "The name \"Llankia\", the logo, the design, and the application's code are the property of its developer. You may not copy, resell, or distribute the app without permission.",
+    "s10titulo": "10. Cancelling your account",
+    "s10cuerpo": "You can stop using Llankia whenever you want. To delete your account and your data, write to us at <email></email>. We may also suspend or close an account if we detect misuse of the app.",
+    "s11titulo": "11. No warranties",
+    "s11cuerpo": "Llankia is still under active development. We do our best to make it work well, but we offer it \"as is\", without guaranteeing it's free of errors at all times. We're not liable for losses resulting from the app malfunctioning, beyond what the law requires.",
+    "s12titulo": "12. Changes to these terms",
+    "s12cuerpo": "If we make important changes to these terms, we'll announce it inside the app. The date above always shows the last update.",
+    "s13titulo": "13. Governing law",
+    "s13cuerpo": "Llankia is developed in Lima, Peru, and these terms are interpreted under Peruvian law.",
+    "s14titulo": "14. Contact",
+    "s14cuerpo": "Questions about these terms? Write to us at <email></email>."
   }
 }

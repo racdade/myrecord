@@ -2,15 +2,18 @@
 
 import { useState } from "react";
 import Link from "next/link";
-
-const ENLACES = [
-  { href: "#como-funciona", label: "Cómo funciona" },
-  { href: "#precios", label: "Precios" },
-  { href: "#nosotros", label: "Nosotros" },
-];
+import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "./language-switcher";
 
 export function MobileMenu() {
+  const t = useTranslations("marketing.nav");
   const [abierto, setAbierto] = useState(false);
+
+  const ENLACES = [
+    { href: "#como-funciona", label: t("comoFunciona") },
+    { href: "#precios", label: t("precios") },
+    { href: "#nosotros", label: t("nosotros") },
+  ];
 
   return (
     <div className="md:hidden">
@@ -19,7 +22,7 @@ export function MobileMenu() {
           href="/login"
           className="rounded-full bg-[#0A0A0A] px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-70"
         >
-          Empezar
+          {t("empezar")}
         </Link>
         <button
           type="button"
@@ -53,6 +56,9 @@ export function MobileMenu() {
               </a>
             ))}
           </nav>
+          <div className="mt-5 border-t border-[#E8E8E8] pt-4">
+            <LanguageSwitcher />
+          </div>
         </div>
       )}
     </div>
