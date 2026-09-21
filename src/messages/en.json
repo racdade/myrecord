@@ -169,6 +169,10 @@
     "para": "For",
     "guardarCambios": "Save changes",
     "tusTurnos": "Your shifts",
+    "horarioMasReciente": "Most recent schedule",
+    "semanasAnteriores": "Previous weeks",
+    "semanaDelAl": "Week of {desde} to {hasta}",
+    "todaviaNoHaySemanasAnteriores": "No previous weeks yet.",
     "todaviaNoRegistras": "You haven't logged any shifts yet.",
     "horasNetas": "Net hours",
     "horasExtra": "Overtime",
@@ -216,6 +220,8 @@
     "exportarPDF": "Export PDF",
     "tendencia": "Trend — last 12 weeks",
     "calendarioDelMes": "Month calendar",
+    "mesAnterior": "Previous month",
+    "mesSiguiente": "Next month",
     "diasSemana": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
   },
   "equipo": {

@@ -1,3 +1,5 @@
+import { addDays, format, parseISO } from "date-fns";
+import { enUS, es } from "date-fns/locale";
 import Link from "next/link";
 import { Clock } from "lucide-react";
 import { redirect } from "next/navigation";
@@ -14,13 +16,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { createClient } from "@/lib/supabase/server";
-import { minutosAHoras, minutosExtraTurno, minutosNetosTurno } from "@/lib/calc";
+import { minutosAHoras, minutosExtraTurno, minutosNetosTurno, type ReglasExtras } from "@/lib/calc";
 import { filaAReglas, filaATurno } from "@/lib/shift-mapper";
 import { formatearRangoHora } from "@/lib/formato-hora";
 import { nombreDiaSemana } from "@/lib/dia-semana";
+import { rangoSemanaActual } from "@/lib/semana";
+import type { FormatoHoraDB, ShiftRow } from "@/types/database";
 import { actualizarTurno, borrarTurno, crearTurno } from "./actions";
 import { TurnoForm } from "./turno-form";
 import { SincronizarButton } from "./sincronizar-button";
+
+const LOCALES_DATE_FNS = { es, en: enUS };
 
 export default async function TurnosPage({
   searchParams,
@@ -54,6 +60,23 @@ export default async function TurnosPage({
   const turnos = [...(turnosRecientes ?? [])].sort((a, b) => a.fecha.localeCompare(b.fecha));
   const reglas = filaAReglas(reglaRow);
 
+  // Se agrupan por semana (lunes a domingo) para separar el horario más
+  // reciente —el que recién se subió o registró— de las semanas anteriores.
+  const semanasPorInicio = new Map<string, ShiftRow[]>();
+  for (const turno of turnos) {
+    const inicioSemana = rangoSemanaActual(parseISO(turno.fecha)).inicio;
+    const grupo = semanasPorInicio.get(inicioSemana) ?? [];
+    grupo.push(turno);
+    semanasPorInicio.set(inicioSemana, grupo);
+  }
+  const iniciosSemanaOrdenados = [...semanasPorInicio.keys()].sort();
+  const inicioSemanaReciente = iniciosSemanaOrdenados.at(-1);
+  const turnosSemanaReciente = inicioSemanaReciente ? (semanasPorInicio.get(inicioSemanaReciente) ?? []) : [];
+  const semanasAnteriores = iniciosSemanaOrdenados
+    .slice(0, -1)
+    .reverse()
+    .map((inicio) => ({ inicio, turnos: semanasPorInicio.get(inicio) ?? [] }));
+
   const formatoHora = profile?.formato_hora ?? "24h";
 
   const teamId = membresias?.[0]?.team_id;
@@ -68,6 +91,7 @@ export default async function TurnosPage({
   const t = await getTranslations("turnos");
   const tc = await getTranslations("comun");
   const locale = await getLocale();
+  const dateFnsLocale = LOCALES_DATE_FNS[locale as "es" | "en"] ?? es;
 
   const ETIQUETAS_TIPO: Record<string, string> = {
     normal: tc("normal"),
@@ -113,65 +137,115 @@ export default async function TurnosPage({
 
       <Card>
         <CardHeader>
-          <CardTitle>{t("tusTurnos")}</CardTitle>
+          <CardTitle>{t("horarioMasReciente")}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <SincronizarButton />
-          {turnos.length === 0 ? (
+          {turnosSemanaReciente.length === 0 ? (
             <EmptyState icon={Clock} mensaje={t("todaviaNoRegistras")} />
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{tc("fecha")}</TableHead>
-                    <TableHead>{tc("dia")}</TableHead>
-                    <TableHead>{tc("tipo")}</TableHead>
-                    <TableHead>{tc("horario")}</TableHead>
-                    <TableHead>{tc("descanso")}</TableHead>
-                    <TableHead>{t("horasNetas")}</TableHead>
-                    <TableHead>{t("horasExtra")}</TableHead>
-                    <TableHead>{tc("nota")}</TableHead>
-                    <TableHead className="text-right">{tc("acciones")}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {turnos.map((turno) => {
-                    const turnoCalc = filaATurno(turno);
-                    const horas = minutosAHoras(minutosNetosTurno(turnoCalc));
-                    const horasExtra = minutosAHoras(minutosExtraTurno(turnoCalc, reglas));
-                    return (
-                      <TableRow key={turno.id}>
-                        <TableCell>{turno.fecha}</TableCell>
-                        <TableCell className="text-muted-foreground">{nombreDiaSemana(turno.fecha, locale)}</TableCell>
-                        <TableCell>{ETIQUETAS_TIPO[turno.tipo] ?? turno.tipo}</TableCell>
-                        <TableCell>{formatearRangoHora(turno.hora_inicio, turno.hora_fin, formatoHora)}</TableCell>
-                        <TableCell>{turno.descanso_min} min</TableCell>
-                        <TableCell>{horas.toFixed(2)} h</TableCell>
-                        <TableCell>{horasExtra > 0 ? `${horasExtra.toFixed(2)} h` : "—"}</TableCell>
-                        <TableCell className="max-w-40 truncate">{turno.nota ?? "—"}</TableCell>
-                        <TableCell className="flex justify-end gap-2 text-right">
-                          <Link
-                            href={`/turnos?editar=${turno.id}`}
-                            className={buttonVariants({ variant: "outline", size: "sm" })}
-                          >
-                            {tc("editar")}
-                          </Link>
-                          <form action={borrarTurno.bind(null, turno.id)}>
-                            <Button variant="destructive" size="sm" type="submit">
-                              {tc("borrar")}
-                            </Button>
-                          </form>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </div>
+            <TablaTurnos
+              turnos={turnosSemanaReciente}
+              etiquetasTipo={ETIQUETAS_TIPO}
+              formatoHora={formatoHora}
+              reglas={reglas}
+              locale={locale}
+              t={t}
+              tc={tc}
+            />
           )}
         </CardContent>
       </Card>
+
+      {semanasAnteriores.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("semanasAnteriores")}</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-6">
+            {semanasAnteriores.map((semana) => (
+              <div key={semana.inicio} className="flex flex-col gap-2">
+                <p className="text-sm font-medium">
+                  {t("semanaDelAl", {
+                    desde: format(parseISO(semana.inicio), "d MMM", { locale: dateFnsLocale }),
+                    hasta: format(addDays(parseISO(semana.inicio), 6), "d MMM", { locale: dateFnsLocale }),
+                  })}
+                </p>
+                <TablaTurnos
+                  turnos={semana.turnos}
+                  etiquetasTipo={ETIQUETAS_TIPO}
+                  formatoHora={formatoHora}
+                  reglas={reglas}
+                  locale={locale}
+                  t={t}
+                  tc={tc}
+                />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+interface TablaTurnosProps {
+  turnos: ShiftRow[];
+  etiquetasTipo: Record<string, string>;
+  formatoHora: FormatoHoraDB;
+  reglas: ReglasExtras;
+  locale: string;
+  t: Awaited<ReturnType<typeof getTranslations>>;
+  tc: Awaited<ReturnType<typeof getTranslations>>;
+}
+
+function TablaTurnos({ turnos, etiquetasTipo, formatoHora, reglas, locale, t, tc }: TablaTurnosProps) {
+  return (
+    <div className="overflow-x-auto">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>{tc("fecha")}</TableHead>
+            <TableHead>{tc("dia")}</TableHead>
+            <TableHead>{tc("tipo")}</TableHead>
+            <TableHead>{tc("horario")}</TableHead>
+            <TableHead>{tc("descanso")}</TableHead>
+            <TableHead>{t("horasNetas")}</TableHead>
+            <TableHead>{t("horasExtra")}</TableHead>
+            <TableHead>{tc("nota")}</TableHead>
+            <TableHead className="text-right">{tc("acciones")}</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {turnos.map((turno) => {
+            const turnoCalc = filaATurno(turno);
+            const horas = minutosAHoras(minutosNetosTurno(turnoCalc));
+            const horasExtra = minutosAHoras(minutosExtraTurno(turnoCalc, reglas));
+            return (
+              <TableRow key={turno.id}>
+                <TableCell>{turno.fecha}</TableCell>
+                <TableCell className="text-muted-foreground">{nombreDiaSemana(turno.fecha, locale)}</TableCell>
+                <TableCell>{etiquetasTipo[turno.tipo] ?? turno.tipo}</TableCell>
+                <TableCell>{formatearRangoHora(turno.hora_inicio, turno.hora_fin, formatoHora)}</TableCell>
+                <TableCell>{turno.descanso_min} min</TableCell>
+                <TableCell>{horas.toFixed(2)} h</TableCell>
+                <TableCell>{horasExtra > 0 ? `${horasExtra.toFixed(2)} h` : "—"}</TableCell>
+                <TableCell className="max-w-40 truncate">{turno.nota ?? "—"}</TableCell>
+                <TableCell className="flex justify-end gap-2 text-right">
+                  <Link href={`/turnos?editar=${turno.id}`} className={buttonVariants({ variant: "outline", size: "sm" })}>
+                    {tc("editar")}
+                  </Link>
+                  <form action={borrarTurno.bind(null, turno.id)}>
+                    <Button variant="destructive" size="sm" type="submit">
+                      {tc("borrar")}
+                    </Button>
+                  </form>
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
     </div>
   );
 }

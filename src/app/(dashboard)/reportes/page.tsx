@@ -1,7 +1,7 @@
-import { format, parseISO } from "date-fns";
+import { addMonths, format, parseISO, subMonths } from "date-fns";
 import { enUS, es } from "date-fns/locale";
 import Link from "next/link";
-import { Clock } from "lucide-react";
+import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import { redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,6 +32,7 @@ interface ReportesSearchParams {
   modo?: string;
   desde?: string;
   hasta?: string;
+  mesCal?: string;
 }
 
 export default async function ReportesPage({
@@ -50,18 +51,19 @@ export default async function ReportesPage({
   const rango = resolverRango(params);
   const reporte = await construirReporte(supabase, user.id, rango);
 
-  const mesActual = rangoMes();
+  const mesCalRef = params.mesCal && /^\d{4}-\d{2}$/.test(params.mesCal) ? parseISO(`${params.mesCal}-01`) : new Date();
+  const mesCal = rangoMes(mesCalRef);
   const { data: turnosMes } = await supabase
     .from("shifts")
     .select("*")
     .eq("user_id", user.id)
-    .gte("fecha", mesActual.inicio)
-    .lte("fecha", mesActual.fin);
+    .gte("fecha", mesCal.inicio)
+    .lte("fecha", mesCal.fin);
   const { data: feriadosMes } = await supabase
     .from("holidays")
     .select("fecha, nombre")
-    .gte("fecha", mesActual.inicio)
-    .lte("fecha", mesActual.fin);
+    .gte("fecha", mesCal.inicio)
+    .lte("fecha", mesCal.fin);
   const { data: profile } = await supabase.from("profiles").select("formato_hora").eq("id", user.id).single();
   const formatoHora = profile?.formato_hora ?? "24h";
 
@@ -75,7 +77,14 @@ export default async function ReportesPage({
   }));
 
   const queryExport = new URLSearchParams({ modo, ...(modo === "rango" ? { desde: rango.inicio, hasta: rango.fin } : {}) });
-  const queryExportMes = new URLSearchParams({ modo: "mes" });
+  const queryExportMes = new URLSearchParams({ modo: "rango", desde: mesCal.inicio, hasta: mesCal.fin });
+
+  const mesCalAnteriorStr = format(subMonths(mesCalRef, 1), "yyyy-MM");
+  const mesCalSiguienteStr = format(addMonths(mesCalRef, 1), "yyyy-MM");
+  function linkMesCal(valor: string) {
+    const query = new URLSearchParams({ modo, ...(modo === "rango" ? { desde: rango.inicio, hasta: rango.fin } : {}), mesCal: valor });
+    return `/reportes?${query.toString()}`;
+  }
 
   const t = await getTranslations("reportes");
   const tc = await getTranslations("comun");
@@ -178,8 +187,24 @@ export default async function ReportesPage({
       </Card>
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>{t("calendarioDelMes")}</CardTitle>
+        <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-1">
+            <Link
+              href={linkMesCal(mesCalAnteriorStr)}
+              aria-label={t("mesAnterior")}
+              className={buttonVariants({ variant: "ghost", size: "icon-sm" })}
+            >
+              <ChevronLeft className="size-4" aria-hidden="true" />
+            </Link>
+            <CardTitle>{t("calendarioDelMes")}</CardTitle>
+            <Link
+              href={linkMesCal(mesCalSiguienteStr)}
+              aria-label={t("mesSiguiente")}
+              className={buttonVariants({ variant: "ghost", size: "icon-sm" })}
+            >
+              <ChevronRight className="size-4" aria-hidden="true" />
+            </Link>
+          </div>
           <div className="flex gap-2">
             <a href={`/api/reportes/csv?${queryExportMes.toString()}`} className={buttonVariants({ variant: "outline", size: "sm" })}>
               {t("exportarCSV")}
@@ -191,7 +216,7 @@ export default async function ReportesPage({
         </CardHeader>
         <CardContent>
           <CalendarioMensual
-            mesRef={new Date()}
+            mesRef={mesCalRef}
             turnos={turnosMes ?? []}
             feriados={feriadosMes ?? []}
             locale={locale}

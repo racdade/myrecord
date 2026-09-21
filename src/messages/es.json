@@ -169,6 +169,10 @@
     "para": "Para",
     "guardarCambios": "Guardar cambios",
     "tusTurnos": "Tus turnos",
+    "horarioMasReciente": "Horario más reciente",
+    "semanasAnteriores": "Semanas anteriores",
+    "semanaDelAl": "Semana del {desde} al {hasta}",
+    "todaviaNoHaySemanasAnteriores": "Todavía no hay semanas anteriores.",
     "todaviaNoRegistras": "Todavía no registras turnos.",
     "horasNetas": "Horas netas",
     "horasExtra": "Horas extra",
@@ -216,6 +220,8 @@
     "exportarPDF": "Exportar PDF",
     "tendencia": "Tendencia — últimas 12 semanas",
     "calendarioDelMes": "Calendario del mes",
+    "mesAnterior": "Mes anterior",
+    "mesSiguiente": "Mes siguiente",
     "diasSemana": ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]
   },
   "equipo": {
