@@ -138,6 +138,14 @@ export default async function TurnosPage({
       <Card>
         <CardHeader>
           <CardTitle>{t("horarioMasReciente")}</CardTitle>
+          {inicioSemanaReciente && (
+            <p className="text-sm text-muted-foreground">
+              {t("semanaDelAl", {
+                desde: format(parseISO(inicioSemanaReciente), "d MMM", { locale: dateFnsLocale }),
+                hasta: format(addDays(parseISO(inicioSemanaReciente), 6), "d MMM", { locale: dateFnsLocale }),
+              })}
+            </p>
+          )}
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <SincronizarButton />
