@@ -22,6 +22,7 @@ import { construirReporte } from "@/lib/reportes/construir";
 import { resolverRango } from "@/lib/reportes/acceso";
 import { rangoMes } from "@/lib/semana";
 import { formatearRangoHora } from "@/lib/formato-hora";
+import { nombreDiaSemana } from "@/lib/dia-semana";
 import { TendenciaChart } from "./tendencia-chart";
 import { CalendarioMensual } from "./calendario-mensual";
 
@@ -74,6 +75,7 @@ export default async function ReportesPage({
   }));
 
   const queryExport = new URLSearchParams({ modo, ...(modo === "rango" ? { desde: rango.inicio, hasta: rango.fin } : {}) });
+  const queryExportMes = new URLSearchParams({ modo: "mes" });
 
   const t = await getTranslations("reportes");
   const tc = await getTranslations("comun");
@@ -143,6 +145,7 @@ export default async function ReportesPage({
                 <TableHeader>
                   <TableRow>
                     <TableHead>{tc("fecha")}</TableHead>
+                    <TableHead>{tc("dia")}</TableHead>
                     <TableHead>{tc("tipo")}</TableHead>
                     <TableHead>{tc("horario")}</TableHead>
                     <TableHead>{tc("nota")}</TableHead>
@@ -152,6 +155,7 @@ export default async function ReportesPage({
                   {reporte.turnos.map((turno) => (
                     <TableRow key={turno.id}>
                       <TableCell>{turno.fecha}</TableCell>
+                      <TableCell className="text-muted-foreground">{nombreDiaSemana(turno.fecha, locale)}</TableCell>
                       <TableCell>{ETIQUETAS_TIPO[turno.tipo] ?? turno.tipo}</TableCell>
                       <TableCell>{formatearRangoHora(turno.hora_inicio, turno.hora_fin, formatoHora)}</TableCell>
                       <TableCell className="max-w-40 truncate">{turno.nota ?? "—"}</TableCell>
@@ -174,8 +178,16 @@ export default async function ReportesPage({
       </Card>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>{t("calendarioDelMes")}</CardTitle>
+          <div className="flex gap-2">
+            <a href={`/api/reportes/csv?${queryExportMes.toString()}`} className={buttonVariants({ variant: "outline", size: "sm" })}>
+              {t("exportarCSV")}
+            </a>
+            <a href={`/api/reportes/pdf?${queryExportMes.toString()}`} className={buttonVariants({ variant: "outline", size: "sm" })}>
+              {t("exportarPDF")}
+            </a>
+          </div>
         </CardHeader>
         <CardContent>
           <CalendarioMensual

@@ -142,6 +142,7 @@
     "descanso": "Break",
     "nota": "Note",
     "acciones": "Actions",
+    "dia": "Day",
     "normal": "Normal",
     "feriado": "Holiday",
     "libre": "Off",
@@ -170,10 +171,12 @@
     "tusTurnos": "Your shifts",
     "todaviaNoRegistras": "You haven't logged any shifts yet.",
     "horasNetas": "Net hours",
+    "horasExtra": "Overtime",
     "sincronizando": "Syncing…",
     "sincronizarSemana": "Sync week with Google Calendar",
     "sincronizadoOk": "Done: {cantidad} shift(s) synced for this week.",
-    "noSePudoSincronizar": "Couldn't sync."
+    "noSePudoSincronizar": "Couldn't sync.",
+    "esFeriado": "It's a holiday: {nombre}"
   },
   "turnosImportar": {
     "titulo": "Add schedule from photo or text",

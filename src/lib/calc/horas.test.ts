@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   calcularPagoEstimado,
+  minutosExtraTurno,
   minutosNetosTurno,
   minutosNocturnosTurno,
   resumirSemana,
@@ -139,5 +140,30 @@ describe("calcularPagoEstimado", () => {
       1 * 20 * 0.35; // recargo nocturno de 1h
 
     expect(pago).toBeCloseTo(esperado, 6);
+  });
+});
+
+describe("minutosExtraTurno", () => {
+  it("es 0 si el turno no pasa el tope diario", () => {
+    const t = turno({ fecha: "2026-09-14", horaInicio: "09:00", horaFin: "17:00", descansoMin: 0 });
+    expect(minutosExtraTurno(t, REGLAS_POR_DEFECTO)).toBe(0);
+  });
+
+  it("cuenta el excedente sobre el tope diario", () => {
+    const t = turno({ fecha: "2026-09-14", horaInicio: "09:00", horaFin: "19:00", descansoMin: 0 }); // 10h
+    expect(minutosExtraTurno(t, REGLAS_POR_DEFECTO)).toBe(2 * 60); // 2h de extra sobre 8h
+  });
+
+  it("es 0 para turnos feriado o libre", () => {
+    const feriado = turno({ fecha: "2026-09-14", horaInicio: "09:00", horaFin: "19:00", tipo: "feriado" });
+    const libre = turno({ fecha: "2026-09-14", horaInicio: null, horaFin: null, tipo: "libre" });
+    expect(minutosExtraTurno(feriado, REGLAS_POR_DEFECTO)).toBe(0);
+    expect(minutosExtraTurno(libre, REGLAS_POR_DEFECTO)).toBe(0);
+  });
+
+  it("es 0 cuando el modo de extra es solo semanal (no hay tope diario)", () => {
+    const reglas: ReglasExtras = { ...REGLAS_POR_DEFECTO, modo: "semana" };
+    const t = turno({ fecha: "2026-09-14", horaInicio: "09:00", horaFin: "19:00", descansoMin: 0 }); // 10h
+    expect(minutosExtraTurno(t, reglas)).toBe(0);
   });
 });

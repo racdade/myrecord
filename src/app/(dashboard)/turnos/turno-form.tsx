@@ -27,18 +27,39 @@ interface TurnoFormProps {
   cancelarHref?: string;
   /** Si la persona pertenece a un equipo, permite marcar el turno como suyo. */
   equipo?: { id: string; nombre: string } | null;
+  /** Para sugerir automáticamente el tipo "feriado" según la fecha elegida. */
+  feriados?: { fecha: string; nombre: string }[];
 }
 
-export function TurnoForm({ action, valoresIniciales, textoBoton, cancelarHref, equipo }: TurnoFormProps) {
+export function TurnoForm({ action, valoresIniciales, textoBoton, cancelarHref, equipo, feriados = [] }: TurnoFormProps) {
   const [tipo, setTipo] = useState<TipoTurnoDB>(valoresIniciales?.tipo ?? "normal");
+  const [fecha, setFecha] = useState(valoresIniciales?.fecha ?? "");
   const tc = useTranslations("comun");
   const t = useTranslations("turnos");
+
+  const feriadosPorFecha = new Map(feriados.map((f) => [f.fecha, f.nombre]));
+  const nombreFeriado = feriadosPorFecha.get(fecha);
+
+  function alCambiarFecha(nuevaFecha: string) {
+    setFecha(nuevaFecha);
+    if (feriadosPorFecha.has(nuevaFecha) && tipo === "normal") {
+      setTipo("feriado");
+    }
+  }
 
   return (
     <form action={action} className="grid gap-4 sm:grid-cols-2">
       <div className="grid gap-1.5">
         <Label htmlFor="fecha">{tc("fecha")}</Label>
-        <Input id="fecha" name="fecha" type="date" defaultValue={valoresIniciales?.fecha} required />
+        <Input
+          id="fecha"
+          name="fecha"
+          type="date"
+          value={fecha}
+          onChange={(e) => alCambiarFecha(e.target.value)}
+          required
+        />
+        {nombreFeriado && <p className="text-xs text-muted-foreground">{t("esFeriado", { nombre: nombreFeriado })}</p>}
       </div>
 
       <div className="grid gap-1.5">

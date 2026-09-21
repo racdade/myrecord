@@ -2,9 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { format, parseISO } from "date-fns";
-import { enUS, es } from "date-fns/locale";
 import { useLocale, useTranslations } from "next-intl";
+import { nombreDiaSemana } from "@/lib/dia-semana";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,14 +38,13 @@ interface Revision {
 const CLASE_SELECT =
   "h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30";
 
-const LOCALES_DATE_FNS = { es, en: enUS };
-
 interface ImportarHorarioFormProps {
   semanaInicioPorDefecto: string;
   equipo?: { id: string; nombre: string } | null;
+  feriados?: { fecha: string; nombre: string }[];
 }
 
-export function ImportarHorarioForm({ semanaInicioPorDefecto, equipo }: ImportarHorarioFormProps) {
+export function ImportarHorarioForm({ semanaInicioPorDefecto, equipo, feriados = [] }: ImportarHorarioFormProps) {
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("turnosImportar");
@@ -58,11 +56,7 @@ export function ImportarHorarioForm({ semanaInicioPorDefecto, equipo }: Importar
   const [pendienteInterpretar, iniciarInterpretar] = useTransition();
   const [pendienteGuardar, iniciarGuardar] = useTransition();
 
-  function nombreDia(fechaISO: string): string {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(fechaISO)) return "—";
-    const nombre = format(parseISO(fechaISO), "EEEE", { locale: LOCALES_DATE_FNS[locale as "es" | "en"] ?? es });
-    return nombre.charAt(0).toUpperCase() + nombre.slice(1);
-  }
+  const feriadosPorFecha = new Map(feriados.map((f) => [f.fecha, f.nombre]));
 
   function manejarSubmit(evento: React.FormEvent<HTMLFormElement>) {
     evento.preventDefault();
@@ -80,7 +74,9 @@ export function ImportarHorarioForm({ semanaInicioPorDefecto, equipo }: Importar
         teamId: String(formData.get("teamId") ?? "").trim() || null,
         filas: resultado.turnos.map((turno) => ({
           fecha: turno.fecha,
-          tipo: turno.tipo,
+          // Si la IA no detectó feriado pero la fecha coincide con uno
+          // conocido, se sugiere "feriado" — la persona lo puede cambiar.
+          tipo: turno.tipo === "normal" && feriadosPorFecha.has(turno.fecha) ? "feriado" : turno.tipo,
           horaInicio: turno.horaInicio ?? "",
           horaFin: turno.horaFin ?? "",
           descansoMin: String(turno.descansoMin),
@@ -95,7 +91,14 @@ export function ImportarHorarioForm({ semanaInicioPorDefecto, equipo }: Importar
       if (!prev) return prev;
       return {
         ...prev,
-        filas: prev.filas.map((fila, i) => (i === indice ? { ...fila, ...cambios } : fila)),
+        filas: prev.filas.map((fila, i) => {
+          if (i !== indice) return fila;
+          const actualizada = { ...fila, ...cambios };
+          if (cambios.fecha && feriadosPorFecha.has(cambios.fecha) && fila.tipo === "normal") {
+            actualizada.tipo = "feriado";
+          }
+          return actualizada;
+        }),
       };
     });
   }
@@ -145,7 +148,7 @@ export function ImportarHorarioForm({ semanaInicioPorDefecto, equipo }: Importar
                       onChange={(e) => actualizarFila(indice, { fecha: e.target.value })}
                     />
                   </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">{nombreDia(fila.fecha)}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{nombreDiaSemana(fila.fecha, locale)}</TableCell>
                   <TableCell>
                     <select
                       value={fila.tipo}

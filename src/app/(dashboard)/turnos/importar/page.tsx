@@ -22,6 +22,8 @@ export default async function ImportarHorarioPage() {
     equipo = equipoRow ?? null;
   }
 
+  const { data: feriados } = await supabase.from("holidays").select("fecha, nombre");
+
   const t = await getTranslations("turnosImportar");
 
   return (
@@ -31,7 +33,7 @@ export default async function ImportarHorarioPage() {
           <CardTitle>{t("titulo")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <ImportarHorarioForm semanaInicioPorDefecto={inicio} equipo={equipo} />
+          <ImportarHorarioForm semanaInicioPorDefecto={inicio} equipo={equipo} feriados={feriados ?? []} />
         </CardContent>
       </Card>
     </div>

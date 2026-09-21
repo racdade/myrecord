@@ -158,3 +158,18 @@ export function calcularPagoEstimado(
 export function minutosAHoras(minutos: number): number {
   return minutos / 60;
 }
+
+/**
+ * Minutos de extra de UN turno, tratándolo de forma independiente (sin
+ * sumarlo con otros turnos del mismo día). Sirve para mostrar una columna de
+ * "horas extra" turno por turno en una tabla. Es una aproximación: si el
+ * modo de extra es "semana" (sin tope diario) o hay más de un turno el mismo
+ * día, esta cifra no es exacta — el total correcto de la semana sigue siendo
+ * el de resumirSemana.
+ */
+export function minutosExtraTurno(turno: Turno, reglas: ReglasExtras): number {
+  if (turno.tipo !== "normal") return 0;
+  if (reglas.modo === "semana") return 0;
+  const netos = minutosNetosTurno(turno);
+  return Math.max(0, netos - reglas.horasDia * 60);
+}

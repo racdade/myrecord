@@ -142,6 +142,7 @@
     "descanso": "Descanso",
     "nota": "Nota",
     "acciones": "Acciones",
+    "dia": "Día",
     "normal": "Normal",
     "feriado": "Feriado",
     "libre": "Libre",
@@ -170,10 +171,12 @@
     "tusTurnos": "Tus turnos",
     "todaviaNoRegistras": "Todavía no registras turnos.",
     "horasNetas": "Horas netas",
+    "horasExtra": "Horas extra",
     "sincronizando": "Sincronizando…",
     "sincronizarSemana": "Sincronizar semana con Google Calendar",
     "sincronizadoOk": "Listo: se sincronizaron {cantidad} turno(s) de esta semana.",
-    "noSePudoSincronizar": "No se pudo sincronizar."
+    "noSePudoSincronizar": "No se pudo sincronizar.",
+    "esFeriado": "Es feriado: {nombre}"
   },
   "turnosImportar": {
     "titulo": "Agregar horario con foto o texto",

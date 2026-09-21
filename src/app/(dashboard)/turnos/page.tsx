@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Clock } from "lucide-react";
 import { redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -14,9 +14,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { createClient } from "@/lib/supabase/server";
-import { minutosAHoras, minutosNetosTurno } from "@/lib/calc";
-import { filaATurno } from "@/lib/shift-mapper";
+import { minutosAHoras, minutosExtraTurno, minutosNetosTurno } from "@/lib/calc";
+import { filaAReglas, filaATurno } from "@/lib/shift-mapper";
 import { formatearRangoHora } from "@/lib/formato-hora";
+import { nombreDiaSemana } from "@/lib/dia-semana";
 import { actualizarTurno, borrarTurno, crearTurno } from "./actions";
 import { TurnoForm } from "./turno-form";
 import { SincronizarButton } from "./sincronizar-button";
@@ -34,15 +35,24 @@ export default async function TurnosPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: turnos, error }, { data: membresias }, { data: profile }] = await Promise.all([
-    supabase.from("shifts").select("*").eq("user_id", user.id).order("fecha", { ascending: false }).limit(60),
-    supabase.from("team_members").select("team_id").eq("user_id", user.id),
-    supabase.from("profiles").select("formato_hora").eq("id", user.id).single(),
-  ]);
+  const [{ data: turnosRecientes, error }, { data: membresias }, { data: profile }, { data: reglaRow }, { data: feriados }] =
+    await Promise.all([
+      // Se piden los 60 más recientes (orden descendente) y se muestran en
+      // orden ascendente (más antiguo primero) para que la semana se lea de
+      // arriba hacia abajo.
+      supabase.from("shifts").select("*").eq("user_id", user.id).order("fecha", { ascending: false }).limit(60),
+      supabase.from("team_members").select("team_id").eq("user_id", user.id),
+      supabase.from("profiles").select("formato_hora").eq("id", user.id).single(),
+      supabase.from("overtime_rules").select("*").eq("user_id", user.id).single(),
+      supabase.from("holidays").select("fecha, nombre"),
+    ]);
 
   if (error) {
     throw new Error(error.message);
   }
+
+  const turnos = [...(turnosRecientes ?? [])].sort((a, b) => a.fecha.localeCompare(b.fecha));
+  const reglas = filaAReglas(reglaRow);
 
   const formatoHora = profile?.formato_hora ?? "24h";
 
@@ -53,10 +63,11 @@ export default async function TurnosPage({
     equipo = equipoRow ?? null;
   }
 
-  const turnoEnEdicion = editar ? turnos?.find((t) => t.id === editar) : undefined;
+  const turnoEnEdicion = editar ? turnos.find((t) => t.id === editar) : undefined;
 
   const t = await getTranslations("turnos");
   const tc = await getTranslations("comun");
+  const locale = await getLocale();
 
   const ETIQUETAS_TIPO: Record<string, string> = {
     normal: tc("normal"),
@@ -92,9 +103,10 @@ export default async function TurnosPage({
                 nota: turnoEnEdicion.nota ?? undefined,
                 teamId: turnoEnEdicion.team_id,
               }}
+              feriados={feriados ?? []}
             />
           ) : (
-            <TurnoForm action={crearTurno} textoBoton={t("agregarTurno")} equipo={equipo} />
+            <TurnoForm action={crearTurno} textoBoton={t("agregarTurno")} equipo={equipo} feriados={feriados ?? []} />
           )}
         </CardContent>
       </Card>
@@ -105,7 +117,7 @@ export default async function TurnosPage({
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <SincronizarButton />
-          {!turnos || turnos.length === 0 ? (
+          {turnos.length === 0 ? (
             <EmptyState icon={Clock} mensaje={t("todaviaNoRegistras")} />
           ) : (
             <div className="overflow-x-auto">
@@ -113,24 +125,30 @@ export default async function TurnosPage({
                 <TableHeader>
                   <TableRow>
                     <TableHead>{tc("fecha")}</TableHead>
+                    <TableHead>{tc("dia")}</TableHead>
                     <TableHead>{tc("tipo")}</TableHead>
                     <TableHead>{tc("horario")}</TableHead>
                     <TableHead>{tc("descanso")}</TableHead>
                     <TableHead>{t("horasNetas")}</TableHead>
+                    <TableHead>{t("horasExtra")}</TableHead>
                     <TableHead>{tc("nota")}</TableHead>
                     <TableHead className="text-right">{tc("acciones")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {turnos.map((turno) => {
-                    const horas = minutosAHoras(minutosNetosTurno(filaATurno(turno)));
+                    const turnoCalc = filaATurno(turno);
+                    const horas = minutosAHoras(minutosNetosTurno(turnoCalc));
+                    const horasExtra = minutosAHoras(minutosExtraTurno(turnoCalc, reglas));
                     return (
                       <TableRow key={turno.id}>
                         <TableCell>{turno.fecha}</TableCell>
+                        <TableCell className="text-muted-foreground">{nombreDiaSemana(turno.fecha, locale)}</TableCell>
                         <TableCell>{ETIQUETAS_TIPO[turno.tipo] ?? turno.tipo}</TableCell>
                         <TableCell>{formatearRangoHora(turno.hora_inicio, turno.hora_fin, formatoHora)}</TableCell>
                         <TableCell>{turno.descanso_min} min</TableCell>
                         <TableCell>{horas.toFixed(2)} h</TableCell>
+                        <TableCell>{horasExtra > 0 ? `${horasExtra.toFixed(2)} h` : "—"}</TableCell>
                         <TableCell className="max-w-40 truncate">{turno.nota ?? "—"}</TableCell>
                         <TableCell className="flex justify-end gap-2 text-right">
                           <Link
