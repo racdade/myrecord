@@ -493,6 +493,9 @@ function Footer() {
             <Link href="/sobre-nosotros" className="transition-opacity hover:opacity-60">
               Sobre nosotros
             </Link>
+            <Link href="/privacidad" className="transition-opacity hover:opacity-60">
+              Privacidad
+            </Link>
             <a href={`mailto:${EMAIL_ADMIN}`} className="transition-opacity hover:opacity-60">
               Contacto
             </a>
