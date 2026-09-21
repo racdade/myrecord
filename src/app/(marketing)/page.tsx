@@ -478,37 +478,52 @@ function Cierre() {
 }
 
 function Footer() {
+  const anio = new Date().getFullYear();
+
   return (
-    <footer className="border-t border-[#E8E8E8] px-6 py-12">
-      <div className="mx-auto flex max-w-[1200px] flex-col gap-8 md:flex-row md:items-start md:justify-between">
-        <div className="flex flex-col items-center gap-4 text-center md:items-start md:text-left">
-          <Link href="/" className="flex items-center gap-2">
-            <Image src="/logo.svg" alt="Llankia" width={18} height={18} />
-            <span className="text-[15px] font-medium">Llankia</span>
-          </Link>
+    <footer className="border-t border-[#E8E8E8] px-6 py-10">
+      <div className="mx-auto flex max-w-[1200px] flex-col gap-6">
+        <Link href="/" className="flex items-center gap-2">
+          <Image src="/logo.svg" alt="Llankia" width={20} height={20} />
+          <span className="text-[15px] font-medium">Llankia</span>
+        </Link>
+
+        <div className="flex flex-col gap-1.5 text-[13px] leading-relaxed text-[#6B6B6B]">
+          <p>© {anio} Llankia. Todos los derechos reservados.</p>
+          <p className="max-w-2xl">
+            Llankia es una herramienta de registro personal de horas. Los cálculos de horas extra
+            son referenciales y no constituyen asesoría legal ni laboral.{" "}
+            <Link href="/terminos" className="underline underline-offset-4 transition-opacity hover:opacity-60">
+              Más info
+            </Link>
+            .
+          </p>
+        </div>
+
+        <div className="h-px bg-[#E8E8E8]" />
+
+        <div className="flex flex-col items-center gap-4 text-[13px] text-[#6B6B6B] sm:flex-row sm:justify-between">
+          <p>Hecho en Lima 🇵🇪</p>
           <nav
-            className="grid grid-cols-2 gap-x-6 gap-y-3 text-[14px] text-[#6B6B6B] sm:flex sm:flex-wrap sm:justify-center md:justify-start"
+            className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-2"
             aria-label="Legal"
           >
             <Link href="/sobre-nosotros" className="transition-opacity hover:opacity-60">
               Sobre nosotros
             </Link>
+            <span aria-hidden="true">|</span>
             <Link href="/privacidad" className="transition-opacity hover:opacity-60">
               Privacidad
             </Link>
+            <span aria-hidden="true">|</span>
             <Link href="/terminos" className="transition-opacity hover:opacity-60">
               Términos
             </Link>
+            <span aria-hidden="true">|</span>
             <a href={`mailto:${EMAIL_ADMIN}`} className="transition-opacity hover:opacity-60">
               Contacto
             </a>
           </nav>
-        </div>
-        <div className="flex flex-col items-center gap-2 text-center md:items-end md:text-right">
-          <p className="text-[13px] text-[#6B6B6B]">Hecho en Lima 🇵🇪</p>
-          <p className="max-w-xs text-[12px] text-[#6B6B6B]">
-            Llankia es una herramienta de registro personal de horas. Los cálculos de horas extra son referenciales.
-          </p>
         </div>
       </div>
     </footer>

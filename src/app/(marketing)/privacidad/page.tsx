@@ -203,7 +203,9 @@ export default function PrivacidadPage() {
       </main>
 
       <footer className="border-t border-[#E8E8E8] px-6 py-8 text-center">
-        <p className="text-[13px] text-[#6B6B6B]">Llankia · Tus horas, claras.</p>
+        <p className="text-[13px] text-[#6B6B6B]">
+          © {new Date().getFullYear()} Llankia. Todos los derechos reservados.
+        </p>
       </footer>
     </div>
   );
