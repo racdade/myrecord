@@ -5,13 +5,13 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const REMITENTE = "Llankia <bienvenida@llankia.com>";
 
-const LOGO_URL = "https://llankia.com/logo-email.png";
+const LOGO_URL = "https://llankia.com/logo-email-full.png";
 
 function htmlBienvenida(nombre: string | null): string {
   const saludo = nombre ? `Hola, ${nombre}.` : "Hola.";
   return `
     <div style="font-family: -apple-system, 'Outfit', system-ui, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; color: #0A0A0A;">
-      <img src="${LOGO_URL}" alt="Llankia" width="40" height="40" style="display: block; margin: 0 0 16px;" />
+      <img src="${LOGO_URL}" alt="Llankia" width="150" height="58" style="display: block; margin: 0 0 20px;" />
       <p style="font-size: 26px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; margin: 0 0 20px;">
         Sube tu horario.<br />Llankia hace las cuentas.
       </p>
