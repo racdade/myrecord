@@ -3,9 +3,9 @@ import { Resend } from "resend";
 // Solo se usa desde el servidor (auth/callback), nunca desde el navegador.
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const REMITENTE = "Llankia <onboarding@resend.dev>";
+const REMITENTE = "Llankia <bienvenida@llankia.com>";
 
-const LOGO_URL = "https://llankia.vercel.app/logo-email.png";
+const LOGO_URL = "https://llankia.com/logo-email.png";
 
 function htmlBienvenida(nombre: string | null): string {
   const saludo = nombre ? `Hola, ${nombre}.` : "Hola.";
@@ -23,7 +23,7 @@ function htmlBienvenida(nombre: string | null): string {
         Sube la foto de tu horario o escríbelo, y Llankia te lo hace en un segundo sin que
         sumes nada a mano.
       </p>
-      <a href="https://llankia.vercel.app/inicio"
+      <a href="https://llankia.com/inicio"
          style="display: inline-block; background: #0A0A0A; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 999px; font-size: 15px; font-weight: 500;">
         Abrir Llankia
       </a>
