@@ -33,11 +33,21 @@ export async function obtenerAccessToken(refreshTokenCifrado: string): Promise<s
   });
 
   if (!respuesta.ok) {
-    await lanzarErrorConDetalle(respuesta, "No se pudo renovar el acceso a Google Calendar. Vuelve a conectar tu cuenta.");
+    await lanzarErrorConDetalle(respuesta, "Google ya no permite el acceso a tu calendario. En el Dashboard, desconecta y vuelve a conectar Google Calendar.");
   }
 
   const data = (await respuesta.json()) as { access_token: string };
   return data.access_token;
+}
+
+/** true si el calendario sigue existiendo en la cuenta de Google (pudo borrarse a mano). */
+export async function existeCalendario(accessToken: string, calendarId: string): Promise<boolean> {
+  const respuesta = await fetch(`${CALENDAR_API}/calendars/${encodeURIComponent(calendarId)}`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (respuesta.ok) return true;
+  if (respuesta.status === 404 || respuesta.status === 410) return false;
+  return lanzarErrorConDetalle(respuesta, "No se pudo leer el calendario de Google.");
 }
 
 export async function crearCalendarioTurnos(accessToken: string): Promise<string> {
@@ -70,6 +80,8 @@ function turnoAEvento(turno: Turno) {
     summary: turno.tipo === "feriado" ? "Turno de trabajo (feriado)" : "Turno de trabajo",
     start: { dateTime: `${turno.fecha}T${turno.horaInicio}:00`, timeZone: ZONA_HORARIA },
     end: { dateTime: `${fechaFin}T${turno.horaFin}:00`, timeZone: ZONA_HORARIA },
+    // Si el evento se borró a mano en Calendar queda como "cancelled"; esto lo restaura.
+    status: "confirmed",
   };
 }
 
@@ -90,7 +102,7 @@ export async function actualizarEvento(
   calendarId: string,
   eventId: string,
   turno: Turno,
-): Promise<void> {
+): Promise<boolean> {
   const respuesta = await fetch(
     `${CALENDAR_API}/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(eventId)}`,
     {
@@ -100,7 +112,10 @@ export async function actualizarEvento(
     },
   );
 
+  // 404/410: el evento se borró en Calendar; quien llama debe crearlo de nuevo.
+  if (respuesta.status === 404 || respuesta.status === 410) return false;
   if (!respuesta.ok) await lanzarErrorConDetalle(respuesta, "No se pudo actualizar el evento en Calendar.");
+  return true;
 }
 
 export async function borrarEvento(accessToken: string, calendarId: string, eventId: string): Promise<void> {

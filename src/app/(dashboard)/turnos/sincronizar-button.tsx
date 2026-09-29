@@ -16,11 +16,16 @@ export function SincronizarButton() {
     iniciar(async () => {
       try {
         const resultado = await sincronizarSemana();
+        if (!resultado.ok) {
+          setEsError(true);
+          setMensaje(resultado.error);
+          return;
+        }
         setEsError(false);
         setMensaje(t("sincronizadoOk", { cantidad: resultado.sincronizados }));
-      } catch (err) {
+      } catch {
         setEsError(true);
-        setMensaje(err instanceof Error ? err.message : t("noSePudoSincronizar"));
+        setMensaje(t("noSePudoSincronizar"));
       }
     });
   }
