@@ -6,8 +6,10 @@ import { createClient } from "@/lib/supabase/server";
 import { rangoSemanaActual } from "@/lib/semana";
 import { filaATurno } from "@/lib/shift-mapper";
 import {
+  AccesoGoogleVencidoError,
   actualizarEvento,
   borrarEvento,
+  buscarCalendarioTurnos,
   crearCalendarioTurnos,
   crearEvento,
   existeCalendario,
@@ -34,6 +36,11 @@ export async function sincronizarSemana(): Promise<ResultadoSincronizacion> {
     return { ok: true, sincronizados };
   } catch (err) {
     console.error("[calendar] Falló la sincronización de la semana", err);
+    if (err instanceof AccesoGoogleVencidoError) {
+      // La conexión ya no sirve: se borra para que el Dashboard ofrezca conectar de nuevo.
+      await supabase.from("google_connections").delete().eq("user_id", user.id);
+      revalidatePath("/dashboard");
+    }
     return { ok: false, error: err instanceof Error ? err.message : "No se pudo sincronizar." };
   }
 }
@@ -52,11 +59,11 @@ async function sincronizar(supabase: Awaited<ReturnType<typeof createClient>>, u
   const accessToken = await obtenerAccessToken(conexion.refresh_token);
 
   let calendarId = conexion.calendar_id;
-  // El calendario "Turnos de trabajo" pudo borrarse a mano: en ese caso se crea otro
+  // El calendario "Turnos de trabajo" pudo borrarse a mano: en ese caso se usa otro
   // y los ids de eventos guardados dejan de servir.
   const calendarioPerdido = calendarId !== null && !(await existeCalendario(accessToken, calendarId));
   if (!calendarId || calendarioPerdido) {
-    calendarId = await crearCalendarioTurnos(accessToken);
+    calendarId = (await buscarCalendarioTurnos(accessToken)) ?? (await crearCalendarioTurnos(accessToken));
     await supabase.from("google_connections").update({ calendar_id: calendarId }).eq("user_id", userId);
   }
 

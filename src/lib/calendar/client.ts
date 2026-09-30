@@ -9,12 +9,21 @@ import { descifrar } from "./crypto";
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
 const CALENDAR_API = "https://www.googleapis.com/calendar/v3";
 const ZONA_HORARIA = "America/Lima";
+const NOMBRE_CALENDARIO = "Turnos de trabajo";
 
 /** Deja el detalle de Google en los logs del servidor antes de lanzar un error genérico al usuario. */
 async function lanzarErrorConDetalle(respuesta: Response, mensaje: string): Promise<never> {
   const cuerpo = await respuesta.text().catch(() => "");
   console.error(`[calendar] ${mensaje} (HTTP ${respuesta.status})`, cuerpo);
   throw new Error(mensaje);
+}
+
+/** Google rechazó el refresh token: la conexión guardada ya no sirve y hay que reconectar. */
+export class AccesoGoogleVencidoError extends Error {
+  constructor() {
+    super("Google ya no permite el acceso a tu calendario. Vuelve a conectar Google Calendar desde el Dashboard.");
+    this.name = "AccesoGoogleVencidoError";
+  }
 }
 
 export async function obtenerAccessToken(refreshTokenCifrado: string): Promise<string> {
@@ -33,7 +42,11 @@ export async function obtenerAccessToken(refreshTokenCifrado: string): Promise<s
   });
 
   if (!respuesta.ok) {
-    await lanzarErrorConDetalle(respuesta, "Google ya no permite el acceso a tu calendario. En el Dashboard, desconecta y vuelve a conectar Google Calendar.");
+    const cuerpo = await respuesta.text().catch(() => "");
+    console.error(`[calendar] No se pudo renovar el acceso (HTTP ${respuesta.status})`, cuerpo);
+    // invalid_grant: Google revocó o venció el permiso; reintentar no sirve.
+    if (cuerpo.includes("invalid_grant")) throw new AccesoGoogleVencidoError();
+    throw new Error("No se pudo renovar el acceso a Google Calendar. Intenta de nuevo en unos minutos.");
   }
 
   const data = (await respuesta.json()) as { access_token: string };
@@ -50,11 +63,28 @@ export async function existeCalendario(accessToken: string, calendarId: string):
   return lanzarErrorConDetalle(respuesta, "No se pudo leer el calendario de Google.");
 }
 
+/**
+ * Busca un calendario "Turnos de trabajo" propio que ya exista (de una conexión
+ * anterior), para no crear uno repetido cada vez que el usuario reconecta.
+ */
+export async function buscarCalendarioTurnos(accessToken: string): Promise<string | null> {
+  const respuesta = await fetch(`${CALENDAR_API}/users/me/calendarList?minAccessRole=owner&maxResults=250`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  if (!respuesta.ok) {
+    await lanzarErrorConDetalle(respuesta, "No se pudo leer tu lista de calendarios de Google.");
+  }
+
+  const data = (await respuesta.json()) as { items?: { id: string; summary?: string }[] };
+  return data.items?.find((calendario) => calendario.summary === NOMBRE_CALENDARIO)?.id ?? null;
+}
+
 export async function crearCalendarioTurnos(accessToken: string): Promise<string> {
   const respuesta = await fetch(`${CALENDAR_API}/calendars`, {
     method: "POST",
     headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ summary: "Turnos de trabajo", timeZone: ZONA_HORARIA }),
+    body: JSON.stringify({ summary: NOMBRE_CALENDARIO, timeZone: ZONA_HORARIA }),
   });
 
   if (!respuesta.ok) {

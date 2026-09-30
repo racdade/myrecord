@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { turnoSchema } from "@/lib/validations/shift";
-import { borrarEvento, obtenerAccessToken } from "@/lib/calendar/client";
+import { AccesoGoogleVencidoError, borrarEvento, obtenerAccessToken } from "@/lib/calendar/client";
 
 function leerFormulario(formData: FormData) {
   return {
@@ -100,9 +100,12 @@ export async function borrarTurno(id: string) {
       try {
         const accessToken = await obtenerAccessToken(conexion.refresh_token);
         await borrarEvento(accessToken, conexion.calendar_id, turno.gcal_event_id);
-      } catch {
+      } catch (err) {
         // El turno ya se borró de la app; si Calendar falla, no bloqueamos
         // la acción del usuario por un evento suelto.
+        if (err instanceof AccesoGoogleVencidoError) {
+          await supabase.from("google_connections").delete().eq("user_id", user.id);
+        }
       }
     }
   }
